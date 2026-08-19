@@ -1,0 +1,300 @@
+<html>
+<head>
+  <title>CraveLoop Dine - Taste the World at Home</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      scroll-behavior: smooth;
+      font-family: 'Poppins', sans-serif;
+    }
+    body {
+      background: linear-gradient(to bottom right, #fffdf8, #fff4e8);
+      color: #333;
+      overflow-x: hidden;
+    }
+    header {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.95);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 1000;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 18px 70px;
+      backdrop-filter: blur(10px);
+      animation: fadeDown 1.2s ease;
+    }
+    header h1 {
+      font-size: 1.9rem;
+      color: #ff7043;
+      font-weight: 700;
+      letter-spacing: 1px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    header h1:hover {
+      color: #ff5722;
+      transform: scale(1.05);
+    }
+    nav {
+      display: flex;
+      align-items: center;
+      gap: 30px;
+    }
+    nav a {
+      text-decoration: none;
+      color: #444;
+      font-weight: 500;
+      position: relative;
+      transition: 0.3s;
+    }
+    nav a::after {
+      content: '';
+      position: absolute;
+      width: 0%;
+      height: 2px;
+      background: #ff7043;
+      left: 0;
+      bottom: -5px;
+      transition: 0.3s;
+    }
+    nav a:hover::after {
+      width: 100%;
+    }
+    nav a:hover {
+      color: #ff7043;
+    }
+    .logout-btn {
+      background: #ff7043;
+      color: #fff;
+      border: none;
+      padding: 8px 22px;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: 0.3s;
+      font-weight: 500;
+    }
+    .logout-btn:hover {
+      background: #ff5722;
+      transform: scale(1.08);
+    }
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 120px 20px 80px;
+      background: url('https://images.unsplash.com/photo-1543353071-873f17a7a088?auto=format&fit=crop&w=1600&q=80') center/cover no-repeat;
+      color: white;
+      position: relative;
+    }
+    .hero::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.45);
+      z-index: 1;
+    }
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 800px;
+      animation: fadeInUp 1.5s ease;
+    }
+    .hero-content h2 {
+      font-size: 3.2rem;
+      margin-bottom: 15px;
+      color: #fff;
+      text-shadow: 2px 2px 12px rgba(0,0,0,0.4);
+      letter-spacing: 1px;
+    }
+    .hero-content p {
+      font-size: 1.15rem;
+      margin-bottom: 25px;
+      color: #f9f9f9;
+      line-height: 1.7;
+    }
+    .hero-content button {
+      background: #ff7043;
+      border: none;
+      padding: 13px 35px;
+      color: white;
+      font-size: 1rem;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: 0.3s;
+      font-weight: 600;
+    }
+    .hero-content button:hover {
+      background: #ff5722;
+      transform: scale(1.1);
+    }
+    .featured {
+      padding: 90px 60px;
+      text-align: center;
+      background: linear-gradient(to bottom, #fffaf4, #fff2e9);
+    }
+    .featured h2 {
+      font-size: 2.4rem;
+      color: #ff7043;
+      margin-bottom: 20px;
+      position: relative;
+      animation: fadeDown 1.2s ease;
+    }
+    .featured h2::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 90px;
+      height: 3px;
+      background: #ff7043;
+    }
+    .featured p.intro {
+      color: #666;
+      font-size: 1rem;
+      margin: 20px auto 50px;
+      max-width: 700px;
+      line-height: 1.7;
+    }
+    .dish-showcase {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 30px;
+      margin-top: 20px;
+      animation: fadeInUp 1.2s ease;
+    }
+    .dish-card {
+      background: #fff;
+      border-radius: 20px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+      overflow: hidden;
+      transition: 0.4s;
+      text-align: center;
+      transform: scale(1);
+      cursor: pointer;
+      text-decoration: none;
+      color: inherit;
+    }
+    .dish-card:hover {
+      transform: translateY(-10px) scale(1.03);
+      box-shadow: 0 12px 25px rgba(0,0,0,0.12);
+    }
+    .dish-card img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      display: block;
+    }
+    .dish-card h3 {
+      margin: 15px 0 8px;
+      color: #333;
+      font-size: 1.3rem;
+    }
+    .dish-card p {
+      font-size: 0.95rem;
+      color: #666;
+      padding: 0 15px 20px;
+    }
+    footer {
+      background: #fff5ef;
+      text-align: center;
+      padding: 25px;
+      font-size: 0.9rem;
+      color: #777;
+      letter-spacing: 0.5px;
+      animation: fadeUp 1.5s ease;
+    }
+    @keyframes fadeInUp {
+      from { transform: translateY(50px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    @keyframes fadeDown {
+      from { transform: translateY(-40px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    @keyframes fadeUp {
+      from { transform: translateY(40px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    @media (max-width: 768px) {
+      header {
+        flex-direction: column;
+        gap: 12px;
+        padding: 15px 30px;
+      }
+      .hero-content h2 {
+        font-size: 2.2rem;
+      }
+      .featured {
+        padding: 60px 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1 onclick="window.location.href='index.html'">CraveLoop Dine</h1>
+    <nav>
+      <a href="Yourchoice.html">Your Choice</a>
+      <a href="cuisine.html">Cuisine</a>
+      <a href="cart.html">Cart</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+      <a href="tracking.html">Live Tracking</a>
+    </nav>
+    <button class="logout-btn" onclick="window.location.href='welcome.html'">Logout</button>
+  </header>
+
+  <section class="hero">
+    <div class="hero-content">
+      <h2>Welcome to CraveLoop Dine 🍽️</h2>
+      <p>Embark on a global food adventure from the comfort of your home. Taste the buttery richness of North India, the spicy zest of the South, the creamy indulgence of Italy, and the bold aromas of China — every dish is crafted to perfection and delivered with love.</p>
+      <button onclick="window.location.href='cuisine.html'">Explore Menu</button>
+    </div>
+  </section>
+
+  <section class="featured">
+    <h2>Our Specialities</h2>
+    <p class="intro">A curated selection of world-class dishes that blend authentic taste and modern presentation. Each plate tells a story — rich in tradition, crafted with passion, and designed to make your taste buds dance.</p>
+    <div class="dish-showcase">
+      <a class="dish-card" href="north.html">
+        <img src="c:/Users/manjula/OneDrive/Pictures/Camera Roll/butter chiken.jpeg" alt="Butter Chicken">
+        <h3>Butter Chicken</h3>
+        <p>A masterpiece of North Indian cuisine — tender chicken simmered in a creamy, spiced tomato sauce that melts your heart.</p>
+      </a>
+      <a class="dish-card" href="south.html">
+        <img src="c:/Users/manjula/OneDrive/Pictures/Saved Pictures/dosa.jpeg" alt="Masala Dosa">
+        <h3>Masala Dosa</h3>
+        <p>Golden-crispy dosa wrapped around savory spiced potato — a South Indian breakfast that’s comfort and crunch in one bite.</p>
+      </a>
+      <a class="dish-card" href="italian.html">
+        <img src="c:/Users/manjula/OneDrive/Pictures/Saved Pictures/Fettuccine Alfredo.jpeg" alt="Italian Alfredo Pasta">
+        <h3>Italian Alfredo Pasta</h3>
+        <p>Indulge in creamy perfection — Italian fettuccine tossed in rich Alfredo sauce with herbs and parmesan.</p>
+      </a>
+      <a class="dish-card" href="chinese.html">
+        <img src="c:/Users/manjula/OneDrive/Pictures/Saved Pictures/Spring Rolls.jpeg" alt="Chinese Veg Spring Rolls">
+        <h3>Chinese Veg Spring Rolls</h3>
+        <p>Crispy golden rolls filled with crunchy vegetables and exotic Asian spices — a perfect Chinese snack that’s light, flavorful, and irresistibly crunchy.</p>
+      </a>
+    </div>
+  </section>
+
+  <footer>
+    &copy; 2025 CraveLoop Dine. Taste the World at Home.
+  </footer>
+
+</body>
+</html>

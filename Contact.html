@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Contact Us - CraveLoop Dine</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
+<style>
+  html, body {height: 100%; margin: 0; padding: 0;}
+  body {
+    font-family: 'Poppins', sans-serif;
+    background-image: url('https://images.unsplash.com/photo-1504754524776-8f4f37790ca0?auto=format&fit=crop&w=1600&q=80');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    color: #333;
+    overflow-x: hidden;
+  }
+
+  header {
+    position: fixed; top: 0; left: 0; width: 100%; height: 85px;
+    background: linear-gradient(90deg, #ffb347, #ffcc33);
+    color: #fff; padding: 0 40px;
+    display: flex; align-items: center; justify-content: space-between;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    z-index: 1000; box-sizing: border-box;
+  }
+  header h1 {
+    flex: 1; text-align: center; font-size: 2rem;
+    font-weight: 700; text-shadow: 1px 2px 6px rgba(0,0,0,0.25);
+    margin: 0; user-select: none;
+  }
+  .header-buttons {position: absolute; top: 50%; right: 20px; transform: translateY(-50%);}
+  .header-buttons button {
+    background: linear-gradient(45deg,#fff3e0,#ffe0b2);
+    color: #5d4037; border: none; padding: 10px 20px;
+    border-radius: 25px; font-weight: 600; font-size: 1rem;
+    cursor: pointer; box-shadow: 0 5px 12px rgba(0,0,0,0.15);
+    transition: all 0.3s ease;
+  }
+  .header-buttons button:hover {
+    transform: scale(1.08);
+    background: linear-gradient(45deg,#ffffff,#fff3e0);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+  }
+
+  main {
+    padding-top: 120px; padding-left: 50px; padding-right: 50px;
+    max-width: 1200px; margin: auto;
+    background: rgba(255, 250, 240, 0.92);
+    border-radius: 20px; box-shadow: 0 12px 25px rgba(0,0,0,0.2);
+    animation: fadeInUp 1.2s ease forwards; box-sizing: border-box;
+  }
+  @keyframes fadeInUp {
+    from {opacity: 0; transform: translateY(25px);}
+    to {opacity: 1; transform: translateY(0);}
+  }
+
+  .contact-hero {text-align: center; margin-bottom: 50px;}
+  .contact-hero h2 {
+    font-size: 3rem; margin-bottom: 20px; color: #e65100;
+    text-shadow: 2px 2px 8px rgba(0,0,0,0.35);
+  }
+  .contact-hero p {
+    font-size: 1.25rem; line-height: 1.7;
+    max-width: 800px; margin: auto; color: #444;
+  }
+
+  .contact-info {
+    margin-bottom: 60px; padding: 25px 40px;
+    background: #fff8e1; border-radius: 15px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+  }
+  .contact-info h3 {color: #e65100; font-size: 2rem; margin-bottom: 25px;}
+
+  .contact-form {
+    background: #fff8e1; padding: 35px 40px;
+    border-radius: 15px; box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+    margin-bottom: 50px;
+  }
+  .contact-form h3 {color: #e65100; font-size: 2rem; margin-bottom: 30px;}
+
+  form {
+    display: flex; flex-direction: column; gap: 20px;
+    max-width: 600px; margin: auto;
+  }
+  input, textarea {
+    width: 100%; padding: 14px 18px; font-size: 1rem;
+    border-radius: 12px; border: 1.5px solid #ffd180;
+    resize: none; transition: all 0.3s ease;
+  }
+  input:focus, textarea:focus {
+    outline: none; border-color: #ffb347;
+    box-shadow: 0 0 10px rgba(255,179,71,0.5);
+  }
+  button.submit {
+    background: linear-gradient(45deg, #ffb74d, #ef6c00);
+    color: #fff; font-weight: 700; border: none;
+    border-radius: 30px; padding: 15px 32px;
+    font-size: 1.1rem; cursor: pointer;
+    align-self: flex-start; transition: all 0.3s ease;
+  }
+  button.submit:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 18px rgba(239,108,0,0.5);
+  }
+
+  .popup {
+    position: fixed; top: 100px; left: 50%;
+    transform: translateX(-50%);
+    background: #43a047; color: #fff;
+    padding: 14px 30px; border-radius: 30px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    opacity: 0; z-index: 1001;
+    transition: opacity 0.3s ease, top 0.3s ease;
+    font-size: 1.1rem;
+  }
+  .popup.show {opacity: 1; top: 130px;}
+
+  .review-section {
+    background: #fff8e1; padding: 30px;
+    border-radius: 15px; box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+    animation: fadeInUp 1.2s ease forwards;
+  }
+  .review-card {
+    background: #ffffff; border-radius: 15px;
+    padding: 20px 25px; margin-bottom: 20px;
+    box-shadow: 0 5px 12px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  .review-card:hover {transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.15);}
+  .review-header {display: flex; justify-content: space-between; align-items: center;}
+  .review-header h4 {margin: 0; color: #e65100;}
+  .review-date {font-size: 0.9rem; color: #777;}
+  .review-text {margin-top: 10px; font-size: 1rem; color: #444;}
+  .admin-reply {
+    background: #fff3e0; border-left: 5px solid #ef6c00;
+    margin-top: 15px; padding: 12px 15px;
+    border-radius: 10px; animation: fadeInReply 0.8s ease;
+  }
+  @keyframes fadeInReply {
+    from {opacity: 0; transform: translateY(10px);}
+    to {opacity: 1; transform: translateY(0);}
+  }
+  .admin-reply strong {color: #d84315;}
+
+  footer {
+    text-align: center; padding: 30px;
+    font-size: 1rem; background: #ffb74d;
+    border-radius: 15px; color: #fff;
+    margin-top: 80px; box-shadow: 0 -4px 15px rgba(0,0,0,0.15);
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Contact Us — CraveLoop Dine</h1>
+  <div class="header-buttons">
+    <button onclick="window.location.href='home.html'">🏠 Home</button>
+  </div>
+</header>
+
+<div class="popup" id="popup">Thank you for your review!</div>
+
+<main>
+  <section class="contact-hero">
+    <h2>We’d Love to Hear From You 🍴</h2>
+    <p>Your feedback helps us serve you better. Get in touch — we’re always delighted to hear from our guests.</p>
+  </section>
+
+  <section class="contact-info">
+    <h3>Founder Details</h3>
+    <p><strong>Founder:</strong> Pruthvi Raj S</p>
+    <p><strong>📞 Contact:</strong> 7795437839</p>
+    <p><strong>📧 Email:</strong> <a href="mailto:rajp51551@gmail.com">rajp51551@gmail.com</a></p>
+    <p>At CraveLoop Dine, we serve authentic North Indian, South Indian, Italian, and Chinese dishes — prepared with passion while maintaining hygiene and cleanliness in every detail.</p>
+  </section>
+
+  <section class="contact-form">
+    <h3>Share Your Feedback 💬</h3>
+    <form id="reviewForm">
+      <input type="text" id="name" placeholder="Your Name" required />
+      <input type="email" id="email" placeholder="Your Email" required />
+      <textarea id="review" rows="5" placeholder="Write your review here..." required></textarea>
+      <button type="submit" class="submit">Submit Review</button>
+    </form>
+  </section>
+
+</main>
+
+<footer>© 2025 CraveLoop Dine — Tasty Food • Clean Space • Happy Guests ❤️</footer>
+
+<script>
+  const reviewForm = document.getElementById('reviewForm');
+  const popup = document.getElementById('popup');
+  const reviewList = document.getElementById('reviewList');
+
+  function displayReviews() {
+    reviewList.innerHTML = '';
+    const reviews = JSON.parse(localStorage.getItem('reviews')) || [];
+    reviews.forEach(r => {
+      const div = document.createElement('div');
+      div.className = 'review-card';
+      div.innerHTML = `
+        <div class="review-header">
+          <h4>${r.name}</h4>
+          <span class="review-date">${r.date}</span>
+        </div>
+        <div class="review-text">${r.review}</div>
+        ${r.reply ? `<div class="admin-reply"><strong>Admin Reply:</strong> ${r.reply}</div>` : ''}
+      `;
+      reviewList.appendChild(div);
+    });
+  }
+
+  reviewForm.addEventListener('submit', e => {
+    e.preventDefault();
+    const name = document.getElementById('name').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const review = document.getElementById('review').value.trim();
+
+    if (name && email && review) {
+      const reviews = JSON.parse(localStorage.getItem('reviews')) || [];
+      reviews.push({ name, email, review, date: new Date().toLocaleString(), reply: "" });
+      localStorage.setItem('reviews', JSON.stringify(reviews));
+
+      reviewForm.reset();
+      popup.textContent = `Thank you, ${name}! Your feedback means a lot 💛`;
+      popup.classList.add('show');
+      setTimeout(() => popup.classList.remove('show'), 2500);
+      displayReviews();
+    }
+  });
+
+  window.onload = displayReviews;
+</script>
+
+</body>
+</html>

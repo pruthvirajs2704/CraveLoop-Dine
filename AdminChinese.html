@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Admin — Chinese Dishes | CraveLoop Dine</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --primary: #4e73df;
+    --secondary: #5a8dee;
+    --bg-content: #f8faff;
+    --text-dark: #1f2d3d;
+  }
+
+  * {margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
+  body{background:var(--bg-content);min-height:100vh;color:var(--text-dark);}
+
+  header{
+    background:var(--primary);
+    color:#fff;
+    padding:20px 30px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    box-shadow:0 4px 10px rgba(0,0,0,0.12);
+  }
+  header h1{font-size:1.6rem;}
+  header button{
+    background:#fff;border:none;padding:8px 14px;border-radius:10px;
+    color:var(--primary);font-weight:700;cursor:pointer;
+  }
+
+  main{padding:28px;}
+  h2{text-align:center;color:var(--primary);margin-bottom:14px;}
+
+  .dish-list{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+    gap:18px;
+  }
+
+  .dish-card{
+    background:#fff;border-radius:12px;padding:18px;
+    box-shadow:0 4px 14px rgba(0,0,0,0.08);
+    transition:transform .25s ease;
+    display:flex;flex-direction:column;justify-content:space-between;
+  }
+  .dish-card:hover{transform:translateY(-5px);}
+  .dish-card h3{color:var(--primary);margin-bottom:6px;}
+  .dish-card p{color:#555;font-size:0.9rem;margin-bottom:10px;}
+  .price{font-weight:700;color:#000;margin-top:auto;}
+
+  .toggle-btn{
+    background:var(--primary);color:#fff;border:none;padding:8px 12px;
+    border-radius:10px;font-weight:700;cursor:pointer;margin-top:10px;
+    transition:all 0.3s ease;
+  }
+  .toggle-btn.paused{background:gray;}
+
+  .add-btn{
+    position:fixed;right:26px;bottom:26px;background:var(--secondary);
+    color:#fff;border:none;border-radius:50%;width:58px;height:58px;
+    font-size:26px;box-shadow:0 8px 24px rgba(0,0,0,0.12);cursor:pointer;
+  }
+
+  /* modal */
+  .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);
+    justify-content:center;align-items:center;z-index:999;}
+  .modal.active{display:flex;}
+  .modal-card{
+    background:#fff;border-radius:12px;padding:18px;width:420px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.18);position:relative;
+  }
+  .modal-card h3{color:var(--primary);margin-bottom:10px;}
+  .modal-card input, .modal-card textarea{
+    width:100%;padding:10px;border-radius:8px;border:1px solid #ddd;
+    margin-bottom:8px;font-size:0.95rem;
+  }
+  .modal-card .row{display:flex;gap:8px;}
+  .modal-card .row input{flex:1;}
+  .modal-card button{
+    background:var(--primary);color:#fff;border:none;padding:10px;
+    border-radius:8px;font-weight:700;cursor:pointer;width:100%;
+  }
+  .close-x{
+    position:absolute;top:10px;right:12px;font-size:20px;
+    cursor:pointer;color:#666;
+  }
+
+  footer{
+    text-align:center;padding:16px;margin-top:22px;
+    background:var(--primary);color:#fff;border-radius:6px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Admin — Chinese Dishes</h1>
+  <button onclick="window.location.href='AdminHome.html'">← Back</button>
+</header>
+
+<main>
+  <h2>Manage Chinese Dishes</h2>
+  <div class="dish-list" id="dishList"></div>
+</main>
+
+<button class="add-btn" onclick="openModal()">+</button>
+
+<!-- Add Dish Modal -->
+<div class="modal" id="modal">
+  <div class="modal-card">
+    <span class="close-x" onclick="closeModal()">&times;</span>
+    <h3>Add New Dish</h3>
+    <input id="dishName" placeholder="Dish name (e.g. Schezwan Fried Rice)">
+    <div class="row">
+      <input id="dishPrice" placeholder="Price (₹)" type="number">
+      <input id="dishRating" placeholder="Rating (e.g. ★★★★☆)">
+    </div>
+    <textarea id="dishDesc" rows="3" placeholder="Short description"></textarea>
+    <button onclick="addDish()">Add Dish</button>
+  </div>
+</div>
+
+<footer>© 2025 CraveLoop Dine — Admin Panel 🍜</footer>
+
+<script>
+  // Default Chinese dishes (15)
+  const defaultDishes = [
+    { name: "Kung Pao Chicken", price: 250, desc: "Spicy stir-fry with chicken, peanuts, and chili peppers." },
+    { name: "Sweet & Sour Pork", price: 220, desc: "Crispy pork in tangy pineapple sauce." },
+    { name: "Peking Duck", price: 300, desc: "Crispy roasted duck served with pancakes." },
+    { name: "Fried Rice", price: 180, desc: "Classic Chinese-style fried rice with eggs and veggies." },
+    { name: "Dumplings", price: 200, desc: "Steamed or fried dough parcels filled with meat or veggies." },
+    { name: "Mapo Tofu", price: 180, desc: "Soft tofu in spicy bean sauce with minced pork." },
+    { name: "Chow Mein", price: 200, desc: "Stir-fried noodles with vegetables and soy sauce." },
+    { name: "Spring Rolls", price: 150, desc: "Crispy golden rolls filled with seasoned veggies." },
+    { name: "Hot & Sour Soup", price: 170, desc: "Spicy, tangy soup with tofu and mushrooms." },
+    { name: "Lo Mein", price: 200, desc: "Soft noodles tossed with vegetables in soy sauce." },
+    { name: "Dim Sum", price: 250, desc: "Variety of bite-sized dishes served with tea." },
+    { name: "Sesame Chicken", price: 220, desc: "Crispy chicken glazed in sweet sesame sauce." },
+    { name: "Chinese Broccoli", price: 180, desc: "Fresh greens served with oyster sauce." },
+    { name: "Wonton Soup", price: 170, desc: "Light broth with pork or shrimp dumplings." },
+    { name: "Char Siu", price: 250, desc: "Honey-glazed barbecued pork." }
+  ];
+
+  // LocalStorage keys
+  const STATUS_KEY = "crave_dishes_status_chinese";
+  const EXTRAS_KEY = "chinese_extra_dishes";
+  const EXTRA_DETAILS = "chinese_extra_details";
+
+  let dishStatus = JSON.parse(localStorage.getItem(STATUS_KEY) || "{}");
+  let extraDishes = JSON.parse(localStorage.getItem(EXTRAS_KEY) || "[]");
+  let extraDetails = JSON.parse(localStorage.getItem(EXTRA_DETAILS) || "{}");
+
+  const list = document.getElementById("dishList");
+
+  function getAllDishes() {
+    const all = [...defaultDishes];
+    extraDishes.forEach(name => {
+      const d = extraDetails[name] || {};
+      all.push({ name, price: d.price || 0, desc: d.desc || "" });
+    });
+    return all;
+  }
+
+  function render() {
+    list.innerHTML = "";
+    const dishes = getAllDishes();
+    dishes.forEach(d => {
+      const status = dishStatus[d.name] || "active";
+      const card = document.createElement("div");
+      card.className = "dish-card";
+      card.innerHTML = `
+        <h3>${d.name}</h3>
+        <p>${d.desc}</p>
+        <div class="price">₹${d.price}</div>
+        <button class="toggle-btn ${status === "paused" ? "paused" : ""}" onclick="toggleDish('${d.name}')">
+          ${status === "paused" ? "Continue" : "Pause"}
+        </button>
+      `;
+      list.appendChild(card);
+    });
+    localStorage.setItem(STATUS_KEY, JSON.stringify(dishStatus));
+  }
+
+  function toggleDish(name) {
+    dishStatus[name] = dishStatus[name] === "paused" ? "active" : "paused";
+    localStorage.setItem(STATUS_KEY, JSON.stringify(dishStatus));
+    render();
+
+    // 🔹 Trigger storage event for user page sync
+    window.dispatchEvent(new Event("storage"));
+  }
+
+  // Add Dish Modal
+  const modal = document.getElementById("modal");
+  function openModal() { modal.classList.add("active"); }
+  function closeModal() { modal.classList.remove("active"); }
+
+  function addDish() {
+    const name = document.getElementById("dishName").value.trim();
+    const price = Number(document.getElementById("dishPrice").value) || 0;
+    const desc = document.getElementById("dishDesc").value.trim();
+    const rating = document.getElementById("dishRating").value.trim();
+
+    if (!name) return alert("Please enter a dish name.");
+
+    if (!extraDishes.includes(name)) extraDishes.push(name);
+    extraDetails[name] = { price, desc, rating };
+    dishStatus[name] = "active";
+
+    localStorage.setItem(EXTRAS_KEY, JSON.stringify(extraDishes));
+    localStorage.setItem(EXTRA_DETAILS, JSON.stringify(extraDetails));
+    localStorage.setItem(STATUS_KEY, JSON.stringify(dishStatus));
+
+    render();
+    closeModal();
+
+    // Notify user page
+    window.dispatchEvent(new Event("storage"));
+  }
+
+  render();
+
+  // 🔹 Sync updates if any change detected (pause/continue/addition)
+  window.addEventListener("storage", (e) => {
+    if ([STATUS_KEY, EXTRAS_KEY, EXTRA_DETAILS].includes(e.key)) {
+      dishStatus = JSON.parse(localStorage.getItem(STATUS_KEY) || "{}");
+      extraDishes = JSON.parse(localStorage.getItem(EXTRAS_KEY) || "[]");
+      extraDetails = JSON.parse(localStorage.getItem(EXTRA_DETAILS) || "{}");
+      render();
+    }
+  });
+</script>
+
+</body>
+</html>

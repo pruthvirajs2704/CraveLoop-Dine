@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>CraveLoop Dine</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      height: 100vh;
+      width: 100%;
+      background-image: url('https://images.unsplash.com/photo-1600891964599-f61ba0e24092');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      overflow: hidden;
+      animation: backgroundMotion 60s ease-in-out infinite alternate;
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .overlay {
+      position: absolute;
+      inset: 0;
+      backdrop-filter: blur(4px);
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 0;
+      animation: fadeIn 2s ease-in;
+    }
+
+    .center-content {
+      position: relative;
+      z-index: 2;
+      background-color: rgba(255, 255, 255, 0.07);
+      padding: 60px 80px;
+      border-radius: 20px;
+      text-align: center;
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+      animation: floatBox 6s ease-in-out infinite alternate, zoomInUp 1.2s ease-out;
+    }
+
+    h1 {
+  font-size: 52px;
+  color: #ffe16c;
+  margin: 0 auto 30px;
+  animation: glowTitle 3s ease-in-out infinite;
+  cursor: default;
+}
+
+
+    h1:hover {
+      text-shadow: 0 0 10px #ffe16c, 0 0 20px #ffe16c;
+      transform: scale(1.02);
+      transition: all 0.3s ease;
+    }
+
+    p {
+      font-size: 20px;
+      color: #f5f5f5;
+      line-height: 1.6;
+      opacity: 0;
+      animation: slideInText 1.5s ease-out 2.7s forwards;
+    }
+
+    p strong {
+      color: #ffd700;
+    }
+
+    p:hover {
+      text-shadow: 0 0 5px white;
+      transition: text-shadow 0.3s ease;
+    }
+
+    .bottom-buttons {
+      position: absolute;
+      bottom: 30px;
+      right: 30px;
+      display: flex;
+      gap: 20px;
+      opacity: 0;
+      animation: fadeInButtons 1.5s ease-out 4s forwards;
+      z-index: 2;
+    }
+
+    .bottom-buttons button {
+      padding: 20px 35px;
+      font-size: 20px;
+      font-weight: bold;
+      border: none;
+      border-radius: 12px;
+      background-color: #ff6b6b;
+      color: white;
+      cursor: pointer;
+      animation: glowPulse 2s infinite alternate;
+      transition: transform 0.2s ease, box-shadow 0.3s;
+    }
+
+    .bottom-buttons button:hover {
+      transform: scale(1.1) rotate(-2deg);
+      box-shadow: 0 0 20px #ff6b6b, 0 0 30px #ff4d4d;
+      animation: wiggle 0.4s ease-in-out;
+    }
+
+    /* Keyframes */
+    @keyframes typing {
+      from { width: 0; }
+      to { width: 100%; }
+    }
+
+    @keyframes blink-caret {
+      0%, 100% { border-color: transparent; }
+      50% { border-color: #ffe16c; }
+    }
+
+    @keyframes slideInText {
+      0% { opacity: 0; transform: translateY(40px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeInButtons {
+      0% { opacity: 0; transform: translateY(50px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes glowPulse {
+      0% { box-shadow: 0 0 5px #ff6b6b; }
+      100% { box-shadow: 0 0 25px #ff6b6b, 0 0 40px #ff4d4d; }
+    }
+
+    @keyframes wiggle {
+      0%, 100% { transform: rotate(0deg); }
+      25% { transform: rotate(3deg); }
+      50% { transform: rotate(-3deg); }
+      75% { transform: rotate(2deg); }
+    }
+
+    @keyframes glowTitle {
+      0% { text-shadow: 0 0 5px #ffe16c; }
+      50% { text-shadow: 0 0 15px #ffe16c; }
+      100% { text-shadow: 0 0 5px #ffe16c; }
+    }
+
+    @keyframes zoomInUp {
+      0% { opacity: 0; transform: scale(0.8) translateY(100px); }
+      100% { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    @keyframes floatBox {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(-10px); }
+    }
+
+    @keyframes backgroundMotion {
+      0% { background-size: 100%; transform: scale(1) rotate(0); }
+      100% { background-size: 110%; transform: scale(1.02) rotate(0.5deg); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .center-content {
+        padding: 40px 20px;
+      }
+
+      h1 {
+        font-size: 36px;
+      }
+
+      p {
+        font-size: 18px;
+      }
+
+      .bottom-buttons {
+        flex-direction: column;
+        gap: 15px;
+        right: 15px;
+        bottom: 15px;
+      }
+
+      .bottom-buttons button {
+        font-size: 18px;
+        padding: 15px 25px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="overlay"></div>
+
+  <div class="center-content">
+    <h1>CraveLoop Dine</h1>
+    <p>
+      Welcome to CraveLoop Dine — your online destination for mouthwatering
+      <strong>South Indian</strong>, <strong>North Indian</strong>,
+      <strong>Italian</strong>, and <strong>Chinese</strong> dishes.<br />
+      Explore, order, and enjoy culinary delights from the comfort of your home!
+    </p>
+  </div>
+
+  <div class="bottom-buttons">
+    <button onclick="window.location.href='signin.html',alert('Redirect to Sign In')">Sign In</button>
+    <button onclick="window.location.href='register.html',alert('Redirect to Register')">Register</button>
+  </div>
+</body>
+</html>

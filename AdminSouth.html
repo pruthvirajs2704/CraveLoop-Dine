@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Admin — South Indian Dishes | CraveLoop Dine</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --primary: #4e73df;
+    --secondary: #1cc88a;
+    --bg-content: #f8f9fc;
+    --text-dark: #333;
+  }
+
+  * {margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
+  body{background:var(--bg-content);min-height:100vh;color:var(--text-dark);}
+
+  header{
+    background:var(--primary);
+    color:#fff;
+    padding:20px 30px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    box-shadow:0 4px 10px rgba(0,0,0,0.12);
+  }
+  header h1{font-size:1.6rem;}
+  header button{
+    background:#fff;border:none;padding:8px 14px;border-radius:10px;color:var(--primary);font-weight:700;cursor:pointer;
+  }
+  main{padding:28px;}
+
+  h2{text-align:center;color:var(--primary);margin-bottom:14px;}
+
+  .dish-list{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+    gap:18px;
+  }
+
+  .dish-card{
+    background:#fff;
+    border-radius:12px;
+    padding:16px;
+    text-align:center;
+    box-shadow:0 4px 18px rgba(0,0,0,0.06);
+    transition:transform .25s ease;
+  }
+  .dish-card:hover{transform:translateY(-6px);}
+  .dish-card h3{color:var(--primary);margin-bottom:6px;font-size:1.1rem;}
+  .dish-card p{color:#555;margin-bottom:10px;font-size:0.95rem;min-height:40px;}
+  .price{font-weight:700;color:#333;margin-bottom:10px;font-size:1rem;}
+  .toggle-btn{
+    background:var(--primary);
+    color:#fff;
+    border:none;
+    padding:8px 14px;
+    border-radius:8px;
+    font-weight:600;
+    cursor:pointer;
+    transition:0.3s ease;
+  }
+  .toggle-btn.paused{background:gray;}
+  .toggle-btn:hover{transform:scale(1.05);}
+
+  .add-btn{
+    position:fixed;
+    right:26px;
+    bottom:26px;
+    background:var(--secondary);
+    color:#fff;
+    border:none;
+    border-radius:50%;
+    width:58px;
+    height:58px;
+    font-size:26px;
+    box-shadow:0 8px 24px rgba(0,0,0,0.12);
+    cursor:pointer;
+  }
+
+  /* modal */
+  .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);justify-content:center;align-items:center;z-index:999;}
+  .modal.active{display:flex;}
+  .modal-card{background:#fff;border-radius:12px;padding:18px;width:420px;box-shadow:0 10px 30px rgba(0,0,0,0.18);position:relative;}
+  .modal-card h3{color:var(--primary);margin-bottom:10px;text-align:center;}
+  .modal-card input, .modal-card textarea{width:100%;padding:10px;border-radius:8px;border:1px solid #ddd;margin-bottom:8px;font-size:0.95rem;}
+  .modal-card .row{display:flex;gap:8px;}
+  .modal-card .row input{flex:1;}
+  .modal-card button{background:var(--primary);color:#fff;border:none;padding:10px;border-radius:8px;font-weight:700;cursor:pointer;width:100%;}
+  .close-x{position:absolute;top:10px;right:12px;font-size:20px;cursor:pointer;color:#666;}
+
+  footer{text-align:center;padding:16px;margin-top:22px;background:var(--primary);color:#fff;border-radius:6px;}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Admin — South Indian Dishes</h1>
+  <button onclick="window.location.href='AdminHome.html'">← Back to Admin Home</button>
+</header>
+
+<main>
+  <h2>Manage South Indian Dishes</h2>
+  <div class="dish-list" id="dishList"></div>
+</main>
+
+<button class="add-btn" onclick="openModal()">+</button>
+
+<div class="modal" id="modal">
+  <div class="modal-card">
+    <span class="close-x" onclick="closeModal()">&times;</span>
+    <h3>Add New Dish</h3>
+    <input id="dishName" placeholder="Dish name (e.g. Masala Dosa)">
+    <div class="row">
+      <input id="dishPrice" placeholder="Price (₹)" type="number">
+      <input id="dishRating" placeholder="Rating (e.g. ★★★★☆)">
+    </div>
+    <textarea id="dishDesc" rows="3" placeholder="Short description"></textarea>
+    <button onclick="addDish()">Add Dish</button>
+  </div>
+</div>
+
+<footer>© 2025 CraveLoop Dine — Admin Panel 🍛</footer>
+
+<script>
+  // Default 15 South Indian dishes
+  const defaultDishes = [
+    { name: "Masala Dosa", price: 120, desc: "Crispy dosa filled with spiced potato masala." },
+    { name: "Idly & Vada", price: 100, desc: "Soft steamed rice cakes served with hot sambar." },
+    { name: "Pongal", price: 110, desc: "Comforting dish made with rice, moong dal and ghee." },
+    { name: "Upma", price: 100, desc: "Savory semolina dish with spices and vegetables." },
+    { name: "Bisi Bele Bath", price: 130, desc: "A spicy rice and lentil dish with tamarind flavor." },
+    { name: "Parota", price: 90, desc: "Layered flaky bread served with curry or kurma." },
+    { name: "Uttapam", price: 110, desc: "Thick dosa topped with onion, tomato, and chili." },
+    { name: "Curd Rice", price: 100, desc: "Rice mixed with curd and tempered spices." },
+    { name: "Chicken Chettinad", price: 180, desc: "Spicy and aromatic chicken curry from Tamil Nadu." },
+    { name: "Paniyaram", price: 120, desc: "Crispy outside, soft inside dumplings made from idli batter." },
+    { name: "Biryani", price: 180, desc: "Fragrant rice cooked with spices and meat/veggies." },
+    { name: "Appam", price: 100, desc: "Soft hoppers made from fermented rice batter." },
+    { name: "Lemon Rice", price: 100, desc: "Tangy rice flavored with lemon and curry leaves." },
+    { name: "Ragi Ball", price: 110, desc: "Traditional Karnataka millet dish served with sambar." },
+    { name: "Mangalore Buns", price: 90, desc: "Sweet, soft banana pooris from Mangalore cuisine." }
+  ];
+
+  const STATUS_KEY = 'crave_dishes_status_south';
+  const EXTRAS_KEY = 'south_extra_dishes';
+  const EXTRA_DETAILS = 'south_extra_details';
+
+  let dishStatus = JSON.parse(localStorage.getItem(STATUS_KEY) || '{}');
+  let extraDishes = JSON.parse(localStorage.getItem(EXTRAS_KEY) || '[]');
+  let extraDetails = JSON.parse(localStorage.getItem(EXTRA_DETAILS) || '{}');
+
+  const list = document.getElementById('dishList');
+
+  function getAllDishes() {
+    const combined = defaultDishes.slice();
+    extraDishes.forEach(name => {
+      const d = extraDetails[name] || { price: 0, desc: '' };
+      combined.push({ name, price: d.price || 0, desc: d.desc || '' });
+    });
+    return combined;
+  }
+
+  function render() {
+    list.innerHTML = '';
+    const all = getAllDishes();
+    all.forEach(d => {
+      const status = dishStatus[d.name] || 'active';
+      const card = document.createElement('div');
+      card.className = 'dish-card';
+      card.innerHTML = `
+        <h3>${d.name}</h3>
+        <p>${d.desc}</p>
+        <div class="price">₹${d.price}</div>
+        <button class="toggle-btn ${status==='paused' ? 'paused' : ''}" onclick="toggleDish('${d.name}')">
+          ${status==='paused' ? 'Continue' : 'Pause'}
+        </button>
+      `;
+      list.appendChild(card);
+    });
+    localStorage.setItem(STATUS_KEY, JSON.stringify(dishStatus));
+  }
+
+  function toggleDish(name){
+    dishStatus[name] = dishStatus[name] === 'paused' ? 'active' : 'paused';
+    localStorage.setItem(STATUS_KEY, JSON.stringify(dishStatus));
+    render();
+    window.dispatchEvent(new Event('storage'));
+    window.dispatchEvent(new Event('southStatusUpdate'));
+  }
+
+  /* Modal handling */
+  const modal = document.getElementById('modal');
+  function openModal(){ modal.classList.add('active'); }
+  function closeModal(){ modal.classList.remove('active'); }
+
+  function addDish(){
+    const name = document.getElementById('dishName').value.trim();
+    const price = Number(document.getElementById('dishPrice').value) || 0;
+    const desc = document.getElementById('dishDesc').value.trim();
+    const rating = document.getElementById('dishRating').value.trim();
+
+    if(!name){ alert('Please enter dish name'); return; }
+    if(!extraDishes.includes(name)) extraDishes.push(name);
+    extraDetails[name] = { price, desc, rating };
+    localStorage.setItem(EXTRAS_KEY, JSON.stringify(extraDishes));
+    localStorage.setItem(EXTRA_DETAILS, JSON.stringify(extraDetails));
+    dishStatus[name] = 'active';
+    localStorage.setItem(STATUS_KEY, JSON.stringify(dishStatus));
+    render();
+    closeModal();
+    document.querySelectorAll('#dishName,#dishPrice,#dishDesc,#dishRating').forEach(i => i.value = '');
+    window.dispatchEvent(new Event('storage'));
+    window.dispatchEvent(new Event('southStatusUpdate'));
+  }
+
+  render();
+
+  window.addEventListener('storage', (e) => {
+    if (e.key === STATUS_KEY || e.key === EXTRAS_KEY || e.key === EXTRA_DETAILS) {
+      dishStatus = JSON.parse(localStorage.getItem(STATUS_KEY) || '{}');
+      extraDishes = JSON.parse(localStorage.getItem(EXTRAS_KEY) || '[]');
+      extraDetails = JSON.parse(localStorage.getItem(EXTRA_DETAILS) || '{}');
+      render();
+    }
+  });
+</script>
+
+</body>
+</html>

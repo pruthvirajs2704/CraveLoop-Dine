@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Italian Dishes - CraveLoop Dine</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+  }
+
+  body {
+    background: linear-gradient(135deg, #fff8e1 0%, #fff3e0 50%, #ffe0b2 100%);
+    color: #333;
+    overflow-x: hidden;
+  }
+
+  header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: linear-gradient(90deg, #ef6c00, #ffb74d);
+    color: #fff;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    padding: 18px 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+  }
+
+  header h1 {
+    flex: 1;
+    text-align: center;
+    font-size: 2.2rem;
+    letter-spacing: 1px;
+    font-weight: 700;
+    text-shadow: 1px 2px 6px rgba(0,0,0,0.25);
+  }
+
+  .header-buttons {
+    position: absolute;
+    top: 50%;
+    right: 35px;
+    transform: translateY(-50%);
+    display: flex;
+    gap: 12px;
+  }
+
+  .header-buttons button {
+    background: linear-gradient(45deg, #fff3e0, #ffecb3);
+    color: #6d4c41;
+    border: none;
+    padding: 8px 18px;
+    border-radius: 25px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    box-shadow: 0 5px 12px rgba(0,0,0,0.15);
+    transition: all 0.3s ease;
+  }
+
+  .header-buttons button:hover {
+    transform: scale(1.08);
+    background: linear-gradient(45deg, #ffffff, #fff3e0);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+  }
+
+  .popup {
+    position: fixed;
+    top: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #43a047;
+    color: #fff;
+    padding: 12px 25px;
+    border-radius: 25px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    opacity: 0;
+    z-index: 2000;
+    transition: opacity 0.3s ease, top 0.3s ease;
+  }
+
+  .popup.show {
+    opacity: 1;
+    top: 100px;
+  }
+
+  main {
+    padding-top: 110px;
+    padding-left: 25px;
+    padding-right: 25px;
+  }
+
+  .dish-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 25px;
+    margin: 0 auto;
+    max-width: 1150px;
+  }
+
+  .dish-card {
+    background: #fffaf0;
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+    text-align: center;
+    transition: all 0.3s ease;
+    position: relative;
+  }
+
+  .dish-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 28px rgba(0,0,0,0.12);
+  }
+
+  .dish-card img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    border-bottom: 3px solid #f57c00;
+    transition: transform 0.4s ease;
+  }
+
+  .dish-card:hover img {
+    transform: scale(1.06);
+  }
+
+  .dish-info {
+    padding: 14px;
+  }
+
+  .dish-card h3 {
+    font-size: 1.2rem;
+    margin-bottom: 5px;
+    color: #e65100;
+  }
+
+  .dish-card p {
+    font-size: 0.9rem;
+    color: #555;
+    margin-bottom: 8px;
+    min-height: 40px;
+  }
+
+  .price-rating-block {
+    background: #ffe6b3;
+    padding: 12px 8px;
+    border-top: 1px solid #ffcc80;
+    border-radius: 0 0 18px 18px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .price-block {
+    background: #ffb74d;
+    padding: 6px 16px;
+    border-radius: 18px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #fff;
+    margin-top: 5px;
+  }
+
+  .rating {
+    color: #fbc02d;
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin-bottom: 4px;
+  }
+
+  .dish-card button {
+    margin: 8px 0 14px 0;
+    padding: 8px 20px;
+    border: none;
+    border-radius: 25px;
+    background: linear-gradient(45deg, #ffb74d, #ef6c00);
+    color: #fff;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .dish-card button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 5px 14px rgba(239,108,0,0.4);
+  }
+
+  .out-of-stock {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0,0,0,0.7);
+    color: #fff;
+    padding: 15px 25px;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 1rem;
+    z-index: 10;
+  }
+
+  footer {
+    text-align: center;
+    padding: 22px;
+    margin-top: 50px;
+    font-size: 0.9rem;
+    background: #ffb74d;
+    border-radius: 10px;
+    border: 1px solid #ffd180;
+    color: #fff;
+    box-shadow: 0 -3px 10px rgba(0,0,0,0.1);
+  }
+
+  @media (max-width: 900px) {
+    .dish-container { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  @media (max-width: 600px) {
+    .dish-container { grid-template-columns: 1fr; }
+    header h1 { font-size: 1.9rem; }
+    .header-buttons { right: 20px; gap: 10px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Italian Dishes</h1>
+  <div class="header-buttons">
+    <button onclick="window.location.href='cuisine.html'">← Back</button>
+    <button onclick="window.location.href='cart.html'">🛒 Cart</button>
+  </div>
+</header>
+
+<div class="popup" id="popup">Item added to cart!</div>
+
+
+<main>
+  <div class="dish-container">
+
+    <!-- Italian Dishes (kept exactly as you provided) -->
+    <div class="dish-card">
+      <img src="c:/Users/manjula/OneDrive/Pictures/Saved Pictures/pizza.jpeg" alt="Margherita Pizza" />
+      <div class="dish-info"><h3>Margherita Pizza</h3><p>Classic Neapolitan pizza with tomato, mozzarella & basil.</p></div>
+      <div class="price-rating-block"><span class="price-block">₹400</span><span class="rating">★★★★☆</span></div>
+      <button data-name="Margherita Pizza" onclick="addToCart('Margherita Pizza',400,'c:/Users/manjula/OneDrive/Pictures/Saved Pictures/pizza.jpeg','Classic Neapolitan pizza with tomato, mozzarella & basil.','★★★★☆')">Add to Cart</button>
+    </div>
+
+    <div class="dish-card">
+      <img src="c:/Users/manjula/OneDrive/Pictures/Saved Pictures/Spaghetti Carbonara.jpeg" alt="Spaghetti Carbonara" />
+      <div class="dish-info"><h3>Spaghetti Carbonara</h3><p>Egg-cheese sauce with pancetta and black pepper.</p></div>
+      <div class="price-rating-block"><span class="price-block">₹450</span><span class="rating">★★★★☆</span></div>
+      <button data-name="Spaghetti Carbonara" onclick="addToCart('Spaghetti Carbonara',450,'c:/Users/manjula/OneDrive/Pictures/Saved Pictures/Spaghetti Carbonara.jpeg','Egg-cheese sauce with pancetta and black pepper.','★★★★☆')">Add to Cart</button>
+    </div>
+
+    <div class="dish-card">
+      <img src="c:/Users/manjula/OneDrive/Pictures/Saved Pictures/Lasagna.jpeg" alt="Lasagna" />
+      <div class="dish-info"><h3>Lasagna</h3><p>Layered pasta with ragù, béchamel and cheese baked to perfection.</p></div>
+      <div class="price-rating-block"><span class="price-block">₹500</span><span class="rating">★★★★☆</span></div>
+      <button data-name="Lasagna" onclick="addToCart('Lasagna',500,'c:/Users/manjula/OneDrive/Pictures/Saved Pictures/Lasagna.jpeg','Layered pasta with ragù, béchamel and cheese baked to perfection.','★★★★☆')">Add to Cart</button>
+    </div>
+
+    <div class="dish-card">
+      <img src="c:/Users/manjula/OneDrive/Pictures/Saved Pictures/Fettuccine Alfredo.jpeg" alt="Fettuccine Alfredo" />
+      <div class="dish-info"><h3>Fettuccine Alfredo</h3><p>Creamy butter-Parmesan sauce over fettuccine noodles.</p></div>
+      <div class="price-rating-block"><span class="price-block">₹450</span><span class="rating">★★★★☆</span></div>
+      <button data-name="Fettuccine Alfredo" onclick="addToCart('Fettuccine Alfredo',450,'c:/Users/manjula/OneDrive/Pictures/Saved Pictures/Fettuccine Alfredo.jpeg','Creamy butter-Parmesan sauce over fettuccine noodles.','★★★★☆')">Add to Cart</button>
+    </div>
+
+    <div class="dish-card">
+      <img src="c:/Users/manjula/OneDrive/Pictures/Saved Pictures/Mushroom Risotto.jpeg" alt="Mushroom Risotto" />
+      <div class="dish-info"><h3>Mushroom Risotto</h3><p>Creamy Arborio rice cooked slowly with mushrooms & broth.</p></div>
+      <div class="price-rating-block"><span class="price-block">₹450</span><span class="rating">★★★★☆</span></div>
+      <button data-name="Mushroom Risotto" onclick="addToCart('Mushroom Risotto',450,'c:/Users/manjula/OneDrive/Pictures/Saved Pictures/Mushroom Risotto.jpeg','Creamy Arborio rice cooked slowly with mushrooms & broth.','★★★★☆')">Add to Cart</button>
+    </div>
+
+    <div class="dish-card">
+      <img src="c:/Users/manjula/OneDrive/Pictures/Saved Pictures/Gnocchi.jpeg" alt="Gnocchi" />
+      <div class="dish-info"><h3>Gnocchi</h3><p>Soft potato dumplings served with sauce or butter & sage.</p></div>
+      <div class="price-rating-block"><span class="price-block">₹400</span><span class="rating">★★★☆☆</span></div>
+      <button data-name="Gnocchi" onclick="addToCart('Gnocchi',400,'c:/Users/manjula/OneDrive/Pictures/Saved Pictures/Gnocchi.jpeg','Soft potato dumplings served with sauce or butter & sage.','★★★☆☆')">Add to Cart</button>
+    </div>
+
+    <div class="dish-card">
+      <img src="c:/Users/manjula/OneDrive/Pictures/Saved Pictures/Bruschetta.jpeg" alt="Bruschetta" />
+      <div class="dish-info"><h3>Bruschetta</h3><p>Grilled bread rubbed with garlic, topped with tomato & basil.</p></div>
+      <div class="price-rating-block"><span class="price-block">₹350</span><span class="rating">★★★☆☆</span></div>
+      <button data-name="Bruschetta" onclick="addToCart('Bruschetta',350,'c:/Users/manjula/OneDrive/Pictures/Saved Pictures/Bruschetta.jpeg','Grilled bread rubbed with garlic, topped with tomato & basil.','★★★☆☆')">Add to Cart</button>
+    </div>
+
+    <div class="dish-card">
+      <img src="c:/Users/manjula/OneDrive/Pictures/Saved Pictures/Ravioli.jpeg" alt="Ravioli" />
+      <div class="dish-info"><h3>Ravioli</h3><p>Stuffed pasta pockets with cheese, meat or veggie filling.</p></div>
+      <div class="price-rating-block"><span class="price-block">₹400</span><span class="rating">★★★★☆</span></div>
+      <button data-name="Ravioli" onclick="addToCart('Ravioli',400,'c:/Users/manjula/OneDrive/Pictures/Saved Pictures/Ravioli.jpeg','Stuffed pasta pockets with cheese, meat or veggie filling.','★★★★☆')">Add to Cart</button>
+    </div>
+
+    <div class="dish-card">
+      <img src="c:/Users/manjula/OneDrive/Pictures/Saved Pictures/Eggplant Parmigiana.jpeg" alt="Eggplant Parmigiana" />
+      <div class="dish-info"><h3>Eggplant Parmigiana</h3><p>Baked layers of eggplant, tomato sauce & melted cheese.</p></div>
+      <div class="price-rating-block"><span class="price-block">₹400</span><span class="rating">★★★★☆</span></div>
+      <button data-name="Eggplant Parmigiana" onclick="addToCart('Eggplant Parmigiana',400,'c:/Users/manjula/OneDrive/Pictures/Saved Pictures/Eggplant Parmigiana.jpeg','Baked layers of eggplant, tomato sauce & melted cheese.','★★★★☆')">Add to Cart</button>
+    </div>
+
+    <div class="dish-card">
+      <img src="c:/Users/manjula/OneDrive/Pictures/Saved Pictures/Minestrone Soup.jpeg" alt="Minestrone Soup" />
+      <div class="dish-info"><h3>Minestrone Soup</h3><p>Hearty vegetable soup with beans, pasta and herbs.</p></div>
+      <div class="price-rating-block"><span class="price-block">₹300</span><span class="rating">★★★☆☆</span></div>
+      <button data-name="Minestrone Soup" onclick="addToCart('Minestrone Soup',300,'c:/Users/manjula/OneDrive/Pictures/Saved Pictures/Minestrone Soup.jpeg','Hearty vegetable soup with beans, pasta and herbs.','★★★☆☆')">Add to Cart</button>
+    </div>
+
+    <div class="dish-card">
+      <img src="c:/Users/manjula/OneDrive/Pictures/Saved Pictures/Osso Buco.jpeg" alt="Osso Buco" />
+      <div class="dish-info"><h3>Osso Buco</h3><p>Braised veal shanks in wine & broth, served with gremolata.</p></div>
+      <div class="price-rating-block"><span class="price-block">₹500</span><span class="rating">★★★★★</span></div>
+      <button data-name="Osso Buco" onclick="addToCart('Osso Buco',500,'c:/Users/manjula/OneDrive/Pictures/Saved Pictures/Osso Buco.jpeg','Braised veal shanks in wine & broth, served with gremolata.','★★★★★')">Add to Cart</button>
+    </div>
+
+    <div class="dish-card">
+      <img src="c:/Users/manjula/OneDrive/Pictures/Saved Pictures/Pesto Pasta.jpeg" alt="Pesto Pasta" />
+      <div class="dish-info"><h3>Pesto Pasta</h3><p>Fresh basil-pinenut-Parmesan sauce tossed with pasta.</p></div>
+      <div class="price-rating-block"><span class="price-block">₹400</span><span class="rating">★★★★☆</span></div>
+      <button data-name="Pesto Pasta" onclick="addToCart('Pesto Pasta',400,'c:/Users/manjula/OneDrive/Pictures/Saved Pictures/Pesto Pasta.jpeg','Fresh basil-pinenut-Parmesan sauce tossed with pasta.','★★★★☆')">Add to Cart</button>
+    </div>
+
+    <div class="dish-card">
+      <img src="c:/Users/manjula/OneDrive/Pictures/Saved Pictures/Veal Saltimbocca.jpeg" alt="Veal Saltimbocca" />
+      <div class="dish-info"><h3>Veal Saltimbocca</h3><p>Veal with prosciutto & sage, pan-sautéed in wine.</p></div>
+      <div class="price-rating-block"><span class="price-block">₹450</span><span class="rating">★★★★☆</span></div>
+      <button data-name="Veal Saltimbocca" onclick="addToCart('Veal Saltimbocca',450,'c:/Users/manjula/OneDrive/Pictures/Saved Pictures/Veal Saltimbocca.jpeg','Veal with prosciutto & sage, pan-sautéed in wine.','★★★★☆')">Add to Cart</button>
+    </div>
+
+    <div class="dish-card">
+      <img src="c:/Users/manjula/OneDrive/Pictures/Saved Pictures/Arancini.jpeg" alt="Arancini" />
+      <div class="dish-info"><h3>Arancini</h3><p>Crispy stuffed rice balls with meat, cheese or peas.</p></div>
+      <div class="price-rating-block"><span class="price-block">₹350</span><span class="rating">★★★☆☆</span></div>
+      <button data-name="Arancini" onclick="addToCart('Arancini',350,'c:/Users/manjula/OneDrive/Pictures/Saved Pictures/Arancini.jpeg','Crispy stuffed rice balls with meat, cheese or peas.','★★★☆☆')">Add to Cart</button>
+    </div>
+
+    <div class="dish-card">
+      <img src="c:/Users/manjula/OneDrive/Pictures/Saved Pictures/Tiramisu.jpeg" alt="Tiramisu" />
+      <div class="dish-info"><h3>Tiramisu</h3><p>Classic Italian dessert with ladyfingers, coffee, mascarpone.</p></div>
+      <div class="price-rating-block"><span class="price-block">₹300</span><span class="rating">★★★★★</span></div>
+      <button data-name="Tiramisu" onclick="addToCart('Tiramisu',300,'c:/Users/manjula/OneDrive/Pictures/Saved Pictures/Tiramisu.jpeg','Classic Italian dessert with ladyfingers, coffee, mascarpone.','★★★★★')">Add to Cart</button>
+    </div>
+
+  </div>
+</main>
+
+<footer>© 2025 CraveLoop Dine — Italian Culinary Delights 🍝</footer>
+
+<script>
+  const STATUS_KEY = 'crave_dishes_status_italian';
+
+  function addToCart(name, price, image, description) {
+    let cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+    let existing = cartItems.find(item => item.name === name);
+    if (existing) {
+      existing.quantity += 1;
+    } else {
+      cartItems.push({ name, price, image, description, quantity: 1 });
+    }
+    localStorage.setItem('cartItems', JSON.stringify(cartItems));
+    showPopup(`${name} added to cart!`);
+  }
+
+  function showPopup(message) {
+    const popup = document.getElementById('popup');
+    popup.textContent = message;
+    popup.classList.add('show');
+    setTimeout(() => popup.classList.remove('show'), 2000);
+  }
+
+  function applyStatuses() {
+    const statusMap = JSON.parse(localStorage.getItem(STATUS_KEY) || '{}');
+    document.querySelectorAll('.dish-card').forEach(card => {
+      const btn = card.querySelector('button[data-name]');
+      if (!btn) return;
+      const name = btn.getAttribute('data-name');
+      const s = statusMap[name] || 'active';
+      const existingOverlay = card.querySelector('.out-of-stock');
+      if (existingOverlay) existingOverlay.remove();
+
+      if (s === 'paused') {
+        btn.disabled = true;
+        btn.innerText = 'Currently Unavailable';
+        btn.style.background = 'gray';
+        btn.style.cursor = 'not-allowed';
+        const overlay = document.createElement('div');
+        overlay.className = 'out-of-stock';
+        overlay.innerText = 'Currently Unavailable';
+        card.appendChild(overlay);
+      } else {
+        btn.disabled = false;
+        btn.innerText = 'Add to Cart';
+        btn.style.background = '';
+        btn.style.cursor = '';
+      }
+    });
+  }
+
+  applyStatuses();
+
+  window.addEventListener('storage', (e) => {
+    if (e.key === STATUS_KEY) applyStatuses();
+  });
+
+  window.addEventListener('italianStatusUpdate', applyStatuses);
+</script>
+</body>
+</html>

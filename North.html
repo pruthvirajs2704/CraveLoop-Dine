@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>North Indian Dishes - CraveLoop Dine</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+  body { background: linear-gradient(135deg, #fffdf5, #fff8e1); color: #333; overflow-x: hidden; }
+  header { position: fixed; top: 0; left: 0; width: 100%; background: linear-gradient(90deg, #ffb347, #ffcc33);
+    color: #fff; box-shadow: 0 4px 15px rgba(0,0,0,0.1); padding: 18px 35px; display: flex;
+    align-items: center; justify-content: center; z-index: 1000; }
+  header h1 { flex: 1; text-align: center; font-size: 2.2rem; letter-spacing: 1px; font-weight: 700;
+    text-shadow: 1px 2px 6px rgba(0,0,0,0.25); }
+  .header-buttons { position: absolute; top: 50%; right: 35px; transform: translateY(-50%); display: flex; gap: 12px; }
+  .header-buttons button {
+    background: linear-gradient(45deg, #fff3e0, #ffe0b2);
+    color: #5d4037; border: none; padding: 8px 18px; border-radius: 25px;
+    font-weight: 600; font-size: 0.95rem; cursor: pointer;
+    box-shadow: 0 5px 12px rgba(0,0,0,0.15); transition: all 0.3s ease;
+  }
+  .header-buttons button:hover {
+    transform: scale(1.08);
+    background: linear-gradient(45deg, #ffffff, #fff3e0);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+  }
+  .popup { position: fixed; top: 80px; left: 50%; transform: translateX(-50%);
+    background: #43a047; color: #fff; padding: 12px 25px; border-radius: 25px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2); opacity: 0; z-index: 2000;
+    transition: opacity 0.3s ease, top 0.3s ease; }
+  .popup.show { opacity: 1; top: 100px; }
+
+  main { padding-top: 110px; padding-left: 25px; padding-right: 25px; }
+  .dish-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px;
+    margin: 0 auto; max-width: 1150px; }
+  .dish-card { background: #fffaf0; border-radius: 18px; overflow: hidden;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08); text-align: center; transition: all 0.3s ease; position: relative; }
+  .dish-card:hover { transform: translateY(-6px); box-shadow: 0 12px 28px rgba(0,0,0,0.12); }
+  .dish-card img { width: 100%; height: 180px; object-fit: cover; border-bottom: 3px solid #ffb74d; transition: transform 0.4s ease; }
+  .dish-card:hover img { transform: scale(1.06); }
+  .dish-info { padding: 14px; }
+  .dish-card h3 { font-size: 1.2rem; margin-bottom: 5px; color: #e65100; }
+  .dish-card p { font-size: 0.9rem; color: #555; margin-bottom: 8px; min-height: 40px; }
+  .price-rating-block {
+    background: #ffe6b3; padding: 12px 8px; border-top: 1px solid #ffcc80;
+    border-radius: 0 0 18px 18px; display: flex; flex-direction: column; align-items: center;
+  }
+  .price-block { background: #ffb74d; padding: 6px 16px; border-radius: 18px;
+    font-size: 0.95rem; font-weight: 700; color: #fff; margin-top: 5px; }
+  .rating { color: #fbc02d; font-weight: 600; font-size: 0.9rem; margin-bottom: 4px; }
+  .dish-card button {
+    margin: 8px 0 14px 0; padding: 8px 20px; border: none; border-radius: 25px;
+    background: linear-gradient(45deg, #ffb74d, #ef6c00); color: #fff;
+    font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease;
+  }
+  .dish-card button:hover { transform: scale(1.05); box-shadow: 0 5px 14px rgba(239,108,0,0.4); }
+  .unavailable {
+    position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(255,255,255,0.8); color: red; font-weight: 700;
+    font-size: 1.2rem; display: flex; align-items: center; justify-content: center;
+  }
+  footer { text-align: center; padding: 22px; margin-top: 50px; font-size: 0.9rem;
+    background: #ffb74d; border-radius: 10px; border: 1px solid #ffd180;
+    color: #fff; box-shadow: 0 -3px 10px rgba(0,0,0,0.1); }
+  @media (max-width: 900px) { .dish-container { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 600px) { .dish-container { grid-template-columns: 1fr; header h1 { font-size: 1.9rem; } } }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>North Indian Dishes</h1>
+  <div class="header-buttons">
+    <button onclick="window.location.href='cuisine.html'">← Back</button>
+    <button onclick="window.location.href='cart.html'">🛒 Cart</button>
+  </div>
+</header>
+
+<div class="popup" id="popup">Item added to cart!</div>
+
+<main>
+  <div class="dish-container" id="dishContainer"></div>
+</main>
+
+<footer>© 2025 CraveLoop Dine — Savor the Rich Flavors of North India 🍛</footer>
+
+<script>
+const dishes = [
+  { name: "Butter Chicken", price: 180, img: "c:/Users/manjula/OneDrive/Pictures/Camera Roll/butter chiken.jpeg", desc: "Creamy tomato gravy with tender chicken.", rating: "★★★★★" },
+  { name: "Paneer Tikka", price: 100, img: "c:/Users/manjula/OneDrive/Pictures/Camera Roll/paneer tikka.jpeg", desc: "Char-grilled paneer cubes with aromatic spices.", rating: "★★★★☆" },
+  { name: "Dal Makhani", price: 200, img: "c:/Users/manjula/OneDrive/Pictures/Camera Roll/dal makhani.jpeg", desc: "Rich black lentils slow-cooked to perfection with butter and cream.", rating: "★★★★★" },
+  { name: "Chole Bhature", price: 220, img: "c:/Users/manjula/OneDrive/Pictures/Camera Roll/chole bhature.jpeg", desc: "Golden fried bhature served with spiced chickpea curry.", rating: "★★★★★" },
+  { name: "Rajma Chawal", price: 150, img: "c:/Users/manjula/OneDrive/Pictures/Camera Roll/rajma chawal.jpeg", desc: "Red kidney beans curry paired with fluffy steamed rice.", rating: "★★★★☆" },
+  { name: "Palak Paneer", price: 130, img: "c:/Users/manjula/OneDrive/Pictures/Camera Roll/palak paneer.jpeg", desc: "Cottage cheese cubes simmered in creamy spinach gravy.", rating: "★★★★☆" },
+  { name: "Tandoori Chicken", price: 250, img: "c:/Users/manjula/OneDrive/Pictures/Camera Roll/tandoori chiken.jpeg", desc: "Charred and juicy chicken marinated in yogurt and spices.", rating: "★★★★★" },
+  { name: "Aloo Gobi", price: 80, img: "c:/Users/manjula/OneDrive/Pictures/Camera Roll/aloo gobi.jpeg", desc: "Spiced potato and cauliflower curry — a homely favorite.", rating: "★★★☆☆" },
+  { name: "Malai Kofta", price: 140, img: "c:/Users/manjula/OneDrive/Pictures/Camera Roll/malai kafta.jpeg", desc: "Soft vegetable dumplings served in rich creamy curry.", rating: "★★★★☆" },
+  { name: "Paneer Butter Masala", price: 120, img: "c:/Users/manjula/OneDrive/Pictures/Camera Roll/paneer butter masala.jpeg", desc: "Soft paneer cubes in spiced buttery tomato gravy.", rating: "★★★★☆" },
+  { name: "Aloo Paratha", price: 60, img: "c:/Users/manjula/OneDrive/Pictures/Camera Roll/aloo paratha.jpeg", desc: "Stuffed flatbread made with spicy potato filling and butter.", rating: "★★★☆☆" },
+  { name: "Naan", price: 50, img: "c:/Users/manjula/OneDrive/Pictures/Camera Roll/naan.jpeg", desc: "Soft tandoor-baked flatbread brushed with ghee.", rating: "★★★☆☆" },
+  { name: "Roti / Phulka", price: 40, img: "c:/Users/manjula/OneDrive/Pictures/Camera Roll/roti.jpeg", desc: "Light wholesome whole-wheat flatbread staple.", rating: "★★★☆☆" },
+  { name: "Samosa", price: 30, img: "c:/Users/manjula/OneDrive/Pictures/Camera Roll/samosa.jpeg", desc: "Golden crisp pastry filled with spiced potatoes and peas.", rating: "★★★☆☆" },
+  { name: "Chaat", price: 50, img: "c:/Users/manjula/OneDrive/Pictures/Camera Roll/chaat.jpeg", desc: "A delightful mix of sweet, spicy, and tangy Indian street flavors.", rating: "★★★★☆" }
+];
+
+const container = document.getElementById("dishContainer");
+const dishStatus = JSON.parse(localStorage.getItem("crave_dishes_status_north") || "{}"); // ✅ updated to match admin key
+
+function renderDishes() {
+  container.innerHTML = "";
+  dishes.forEach(dish => {
+    const status = dishStatus[dish.name] || "active";
+    const card = document.createElement("div");
+    card.className = "dish-card";
+    card.innerHTML = `
+      <img src="${dish.img}" alt="${dish.name}">
+      <div class="dish-info"><h3>${dish.name}</h3><p>${dish.desc}</p></div>
+      <div class="price-rating-block"><span class="price-block">₹${dish.price}</span><span class="rating">${dish.rating}</span></div>
+      ${status==="stopped"
+        ? `<button disabled style="background:gray;cursor:not-allowed;">Out of Stock</button>`
+        : `<button onclick="addToCart('${dish.name}',${dish.price},'${dish.img}','${dish.desc}','${dish.rating}')">Add to Cart</button>`}
+    `;
+    if(status==="stopped"){
+      const overlay=document.createElement("div");
+      overlay.className="unavailable";
+      overlay.textContent="Currently Unavailable";
+      card.appendChild(overlay);
+    }
+    container.appendChild(card);
+  });
+}
+
+function addToCart(name,price,img,desc,rating){
+  let cartItems=JSON.parse(localStorage.getItem("cartItems"))||[];
+  let existing=cartItems.find(i=>i.name===name);
+  if(existing){ existing.quantity+=1; } else { cartItems.push({name,price,image:img,description:desc,rating,quantity:1}); }
+  localStorage.setItem("cartItems",JSON.stringify(cartItems));
+  showPopup(`${name} added to cart!`);
+}
+
+function showPopup(msg){
+  const popup=document.getElementById("popup");
+  popup.textContent=msg; popup.classList.add("show");
+  setTimeout(()=>popup.classList.remove("show"),2000);
+}
+
+renderDishes();
+window.addEventListener("storage",renderDishes);
+</script>
+</body>
+</html>

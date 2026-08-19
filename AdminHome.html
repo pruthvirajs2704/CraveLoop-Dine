@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>CraveLoop Dine — Admin Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+  :root {
+    --primary: #4e73df;
+    --secondary: #2e59d9;
+    --bg-sidebar: #2c3e50;
+    --bg-content: #f8f9fc;
+    --text-light: #f8f9fc;
+    --text-dark: #5a5c69;
+  }
+  * {margin:0; padding:0; box-sizing:border-box; font-family:'Poppins',sans-serif;}
+  body {display:flex; min-height:100vh; background:var(--bg-content); color:var(--text-dark); overflow-x:hidden;}
+  .sidebar {width:250px; background:var(--bg-sidebar); color:var(--text-light); flex-shrink:0; display:flex; flex-direction:column;}
+  .sidebar .brand {padding:20px; font-size:1.4rem; font-weight:600; text-align:center; border-bottom:1px solid rgba(255,255,255,0.1);}
+  .sidebar nav {flex:1; padding:20px 0;}
+  .sidebar nav a {display:block; padding:12px 20px; color:var(--text-light); text-decoration:none; transition:background 0.3s; cursor:pointer;}
+  .sidebar nav a:hover {background:rgba(255,255,255,0.1);}
+  .sidebar nav a.active {background:var(--secondary);}
+  .sub-links {display:none; flex-direction:column; background:#34495e;}
+  .sub-links a {padding:10px 35px; font-size:0.9rem;}
+  .sub-links a:hover {background:rgba(255,255,255,0.15);}
+  .main-content {flex:1; display:flex; flex-direction:column; transition:all 0.3s ease;}
+  .topbar {background:white; padding:15px 20px; border-bottom:1px solid #e3e6f0; display:flex; justify-content:space-between; align-items:center;}
+  .topbar .title {font-size:1.2rem; font-weight:600; color:var(--text-dark);}
+  .topbar .home-btn {padding:5px 12px; border:none; border-radius:5px; background:var(--primary); color:#fff; cursor:pointer; transition:all 0.3s ease;}
+  .topbar .home-btn:hover {background:var(--secondary);}
+  .cards {display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:20px; padding:20px;}
+  .card {background:white; border-radius:8px; padding:20px; box-shadow:0 2px 10px rgba(0,0,0,0.05);}
+  .card h3 {font-size:1rem; color:var(--text-dark); margin-bottom:10px;}
+  .card .value {font-size:2rem; font-weight:600; color:var(--primary);}
+  .charts-container {display:flex; flex-wrap:wrap; justify-content:center; gap:30px; padding:20px;}
+  .chart-box {background:white; border-radius:8px; padding:20px; box-shadow:0 2px 10px rgba(0,0,0,0.05); width:350px; height:350px;}
+  .table-container {padding:20px; display:none;}
+  .table-container.active {display:block; animation:fadeIn 0.4s ease-in-out;}
+  table {width:100%; border-collapse:collapse; background:white; border-radius:8px; overflow:hidden; box-shadow:0 2px 10px rgba(0,0,0,0.05);}
+  th,td {padding:12px 15px; text-align:left;}
+  th {background:var(--primary); color:white;}
+  tr:nth-child(even){background:#f9f9f9;}
+  .cuisine-section {display:none;}
+  .cuisine-section.active {display:block; animation:fadeIn 0.4s ease-in-out;}
+  .dish-grid {display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:15px;}
+  .dish {border:1px solid #eee; border-radius:8px; text-align:center; padding:10px; background:#fafafa; transition:transform 0.3s ease;}
+  .dish:hover {transform:scale(1.05);}
+  .dish img {width:100%; height:120px; border-radius:8px; object-fit:cover;}
+  .dish h4 {margin:8px 0; font-size:0.95rem;}
+  .dish p {font-size:0.8rem; color:#555; margin-bottom:5px;}
+  .dish button {background:var(--primary); color:white; border:none; padding:6px 12px; border-radius:6px; cursor:pointer; transition:background 0.3s ease;}
+  .dish button.stop {background:crimson;}
+  .dish button:hover {opacity:0.9;}
+  @keyframes fadeIn {from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:translateY(0);}}
+  @media (max-width:768px){.sidebar{width:200px;} .topbar .title{font-size:1rem;}}
+</style>
+</head>
+<body>
+<aside class="sidebar">
+  <div class="brand">CraveLoop Admin</div>
+  <nav>
+    <a class="nav-link active" data-page="dashboard">Dashboard</a>
+    <a class="nav-link" id="UserPageLink" href="AdminUser.html">Users</a>
+    <a class="nav-link dishes-link" data-page="dishes">Dishes</a>
+    <div class="sub-links" id="dishSubLinks">
+      <a href="AdminNorth.html">North Indian</a>
+      <a href="AdminSouth.html">South Indian</a>
+      <a href="AdminItalian.html">Italian</a>
+      <a href="AdminChinese.html">Chinese</a>
+    </div>
+    <a class="nav-link" id="orderPageLink" href="AdminOrder.html">Orders</a>
+    <a class="nav-link" id="reviewPageLink" href="AdminReview.html">Reviews</a>
+  </nav>
+</aside>
+
+<div class="main-content">
+  <header class="topbar">
+    <div class="title" id="pageTitle">Dashboard</div>
+    <button class="home-btn" onclick="window.location.href='home.html'">Home</button>
+  </header>
+
+  <!-- Dashboard -->
+  <div id="dashboard" class="page active">
+    <div class="cards">
+      <div class="card"><h3>Total Users </h3><div class="value" id="cardUsers">0</div></div>
+      <div class="card"><h3>Total Dishes</h3><div class="value" id="cardDishes">0</div></div>
+      <div class="card"><h3>Orders Today</h3><div class="value" id="cardOrders">0</div></div>
+      <div class="card"><h3>Reviews Pending</h3><div class="value" id="cardReviews">0</div></div>
+    </div>
+    <div class="charts-container">
+      <div class="chart-box"><canvas id="dishChart"></canvas></div>
+      <div class="chart-box"><canvas id="availabilityChart"></canvas></div>
+    </div>
+  </div>
+
+  <!-- Users -->
+  <div id="users" class="table-container page">
+    <h3>Registered Users</h3>
+    <table id="usersTable">
+      <thead><tr><th>Name</th><th>Email</th><th>Mobile</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <!-- Orders -->
+  <div id="orders" class="table-container page">
+    <h3>Orders Tracking</h3>
+    <table id="ordersTable">
+      <thead><tr><th>Customer</th><th>Dish</th><th>Quantity</th><th>Total</th><th>Date</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+let dishChart, availabilityChart;
+
+// 🔹 Fetch dynamic data for dashboard cards
+function loadDashboardData() {
+  const users = JSON.parse(localStorage.getItem("registeredUsers") || "[]");
+  const dishes = JSON.parse(localStorage.getItem("availableDishes") || "[]");
+  const orders = JSON.parse(localStorage.getItem("confirmedOrders") || "[]");
+  const reviews = JSON.parse(localStorage.getItem("userReviews") || "[]");
+
+  document.getElementById("cardUsers").textContent = users.length;
+  document.getElementById("cardDishes").textContent = dishes.length;
+  document.getElementById("cardOrders").textContent = orders.length;
+  document.getElementById("cardReviews").textContent = reviews.filter(r => r.status !== "Resolved").length;
+
+  // 🔹 Update charts dynamically based on most ordered dishes
+  const dishCount = {};
+  orders.forEach(order => {
+    if (Array.isArray(order.items)) {
+      order.items.forEach(it => {
+        dishCount[it.name] = (dishCount[it.name] || 0) + it.qty;
+      });
+    } else if (order.dish) {
+      dishCount[order.dish] = (dishCount[order.dish] || 0) + (order.qty || 1);
+    }
+  });
+
+  const dishLabels = Object.keys(dishCount).length ? Object.keys(dishCount) : ["North Indian", "South Indian", "Italian", "Chinese"];
+  const dishValues = Object.keys(dishCount).length ? Object.values(dishCount) : [10, 8, 6, 4];
+
+  updateCharts(dishLabels, dishValues);
+}
+
+// 🔹 Render charts dynamically
+function updateCharts(labels, values) {
+  if (dishChart) dishChart.destroy();
+  if (availabilityChart) availabilityChart.destroy();
+
+  const ctx1 = document.getElementById("dishChart").getContext("2d");
+  dishChart = new Chart(ctx1, {
+    type: "bar",
+    data: {
+      labels: labels,
+      datasets: [{
+        label: "Dish Orders",
+        data: values,
+        backgroundColor: ["#4e73df", "#1cc88a", "#36b9cc", "#f6c23e", "#e74a3b", "#858796"]
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { display: false } },
+      scales: { y: { beginAtZero: true } }
+    }
+  });
+
+  const totalDishes = labels.length;
+  const availableCount = Math.min(totalDishes, Math.floor(totalDishes * 0.8));
+  const unavailableCount = totalDishes - availableCount;
+
+  const ctx2 = document.getElementById("availabilityChart").getContext("2d");
+  availabilityChart = new Chart(ctx2, {
+    type: "doughnut",
+    data: {
+      labels: ["Available", "Out of Stock"],
+      datasets: [{
+        data: [availableCount, unavailableCount],
+        backgroundColor: ["#1cc88a", "#e74a3b"]
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { position: "bottom" } }
+    }
+  });
+}
+
+// 🔹 Load registered users table
+function loadUsers() {
+  const users = JSON.parse(localStorage.getItem("registeredUsers") || "[]");
+  const tbody = document.querySelector("#usersTable tbody");
+  tbody.innerHTML = users.map(u => `<tr><td>${u.name}</td><td>${u.email}</td><td>${u.phone || u.mobile || "N/A"}</td></tr>`).join("");
+}
+
+// 🔹 Load confirmed orders table
+function renderOrders() {
+  const orders = JSON.parse(localStorage.getItem("confirmedOrders") || "[]");
+  const tbody = document.querySelector("#ordersTable tbody");
+  tbody.innerHTML = "";
+  orders.forEach(o => {
+    const date = o.date || new Date().toLocaleString();
+    if (Array.isArray(o.items)) {
+      o.items.forEach(it => {
+        tbody.innerHTML += `<tr><td>${o.user || o.customer}</td><td>${it.name}</td><td>${it.qty}</td><td>₹${it.price * it.qty}</td><td>${date}</td></tr>`;
+      });
+    } else {
+      tbody.innerHTML += `<tr><td>${o.user || o.customer}</td><td>${o.dish}</td><td>${o.qty || 1}</td><td>₹${o.total || 0}</td><td>${date}</td></tr>`;
+    }
+  });
+}
+
+// 🔹 Navigation and page handling
+const navLinks = document.querySelectorAll(".nav-link");
+const pages = document.querySelectorAll(".page");
+navLinks.forEach(link => {
+  if (link.id === "reviewPageLink") {
+    link.addEventListener("click", (e) => {
+      e.preventDefault();
+      window.location.href = "AdminReview.html";
+    });
+    return;
+  }
+  link.addEventListener("click", () => {
+    if (link.classList.contains("dishes-link")) {
+      const sub = document.getElementById("dishSubLinks");
+      sub.style.display = sub.style.display === "flex" ? "none" : "flex";
+      return;
+    }
+    navLinks.forEach(l => l.classList.remove("active"));
+    link.classList.add("active");
+    const pageId = link.dataset.page;
+    document.getElementById("pageTitle").textContent = link.textContent;
+    pages.forEach(p => p.classList.remove("active"));
+    document.getElementById(pageId).classList.add("active");
+    if (pageId === "users") loadUsers();
+    if (pageId === "orders") renderOrders();
+  });
+});
+
+// 🔹 Initialize Dashboard
+loadDashboardData();
+loadUsers();
+renderOrders();
+
+// 🔹 Auto-update dashboard every 15 seconds for live reflection
+setInterval(loadDashboardData, 15000);
+</script>
+
+</body>
+</html>

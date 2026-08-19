@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Chinese Dishes - CraveLoop Dine</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+
+  body {
+    background: linear-gradient(135deg, #fff3e0, #ffe0b2, #fff8e1);
+    color: #333; overflow-x: hidden;
+  }
+
+  header {
+    position: fixed; top: 0; left: 0; width: 100%;
+    background: linear-gradient(90deg, #ef6c00, #ffb74d);
+    color: #fff; box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    padding: 18px 35px; display: flex; align-items: center; justify-content: center;
+    z-index: 1000;
+  }
+
+  header h1 { flex: 1; text-align: center; font-size: 2.2rem; letter-spacing: 1px; font-weight: 700; text-shadow: 1px 2px 6px rgba(0,0,0,0.25); }
+
+  .header-buttons {
+    position: absolute; top: 50%; right: 35px; transform: translateY(-50%);
+    display: flex; gap: 12px;
+  }
+
+  .header-buttons button {
+    background: linear-gradient(45deg, #fff3e0, #ffecb3);
+    color: #6d4c41; border: none; padding: 8px 18px; border-radius: 25px;
+    font-weight: 600; font-size: 0.95rem; cursor: pointer;
+    box-shadow: 0 5px 12px rgba(0,0,0,0.15); transition: all 0.3s ease;
+  }
+  .header-buttons button:hover { transform: scale(1.08); background: linear-gradient(45deg, #ffffff, #fff3e0); }
+
+  .popup {
+    position: fixed; top: 80px; left: 50%; transform: translateX(-50%);
+    background: #43a047; color: #fff; padding: 12px 25px;
+    border-radius: 25px; box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    opacity: 0; z-index: 2000; transition: opacity 0.3s ease, top 0.3s ease;
+  }
+  .popup.show { opacity: 1; top: 100px; }
+
+  main { padding-top: 110px; padding-left: 25px; padding-right: 25px; }
+
+  .dish-container {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 25px; margin: 0 auto; max-width: 1150px;
+  }
+
+  .dish-card {
+    background: #fff8e1; border-radius: 18px; overflow: hidden;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+    text-align: center; transition: all 0.3s ease; position: relative;
+  }
+  .dish-card:hover { transform: translateY(-6px); box-shadow: 0 12px 28px rgba(0,0,0,0.12); }
+
+  .dish-card img { width: 100%; height: 180px; object-fit: cover; border-bottom: 3px solid #ffb74d; transition: transform 0.4s ease; }
+  .dish-card:hover img { transform: scale(1.06); }
+
+  .dish-info { padding: 14px; }
+  .dish-card h3 { font-size: 1.2rem; margin-bottom: 5px; color: #ef6c00; }
+  .dish-card p { font-size: 0.9rem; color: #555; margin-bottom: 12px; min-height: 48px; }
+
+  .price-rating-block {
+    display: flex; flex-direction: column; align-items: center;
+    padding: 15px 0; background: #ffd180; border-top: 1px solid #ffb74d;
+    border-radius: 0 0 20px 20px;
+  }
+
+  .price-block {
+    background: #ffb74d; padding: 8px 20px; border-radius: 20px;
+    font-weight: 700; font-size: 1.1rem; color: #fff;
+    margin-bottom: 5px;
+  }
+
+  .rating { color: #fbc02d; font-weight: 600; font-size: 1rem; }
+
+  .dish-card button {
+    margin: 10px 0 15px 0; padding: 10px 25px; border: none; border-radius: 30px;
+    background: linear-gradient(45deg, #ffb74d, #ef6c00);
+    color: #fff; font-size: 1rem; font-weight: 600; cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .dish-card button:hover { transform: scale(1.05); box-shadow: 0 6px 15px rgba(239,108,0,0.5); }
+
+  .out-of-stock {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(255, 255, 255, 0.85);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.2rem; font-weight: 700; color: #ef6c00;
+    border-radius: 18px; backdrop-filter: blur(3px);
+  }
+
+  footer {
+    text-align: center; padding: 25px; margin-top: 60px;
+    font-size: 0.9rem; background: #ffb74d;
+    border-radius: 12px; border: 1px solid #ffd180; color: #fff;
+  }
+
+  @media(max-width:900px){ .dish-container { grid-template-columns: repeat(2, 1fr); } }
+  @media(max-width:600px){ .dish-container { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Chinese Dishes</h1>
+  <div class="header-buttons">
+    <button onclick="window.location.href='cuisine.html'">← Back</button>
+    <button onclick="window.location.href='cart.html'">🛒 Cart</button>
+  </div>
+</header>
+
+<div class="popup" id="popup">Item added to cart!</div>
+
+<main>
+  <div class="dish-container" id="dishContainer"></div>
+</main>
+
+<footer>
+  © 2025 CraveLoop Dine | Authentic Chinese Delicacies
+</footer>
+
+<script>
+const defaultDishes = [
+  {name:"Kung Pao Chicken",desc:"Spicy stir-fry dish with chicken, peanuts, vegetables, and chili peppers.",price:250,img:"c:/Users/manjula/OneDrive/Pictures/Saved Pictures/Kung Pao Chicken.jpeg",rating:"★★★★☆"},
+  {name:"Sweet & Sour Pork",desc:"Crispy pork in a vibrant sauce of vinegar, sugar, and pineapple.",price:220,img:"c:/Users/manjula/OneDrive/Pictures/Saved Pictures/Sweet & Sour Pork.jpeg",rating:"★★★★☆"},
+  {name:"Peking Duck",desc:"Crispy-skinned roasted duck served with pancakes and hoisin sauce.",price:300,img:"c:/Users/manjula/OneDrive/Pictures/Saved Pictures/Peking Duck.jpeg",rating:"★★★★★"},
+  {name:"Fried Rice",desc:"Classic stir-fried rice with eggs, vegetables, and soy sauce.",price:180,img:"c:/Users/manjula/OneDrive/Pictures/Saved Pictures/Fried Rice.jpeg",rating:"★★★★☆"},
+  {name:"Dumplings",desc:"Steamed or fried dough parcels filled with minced meat or vegetables.",price:200,img:"c:/Users/manjula/OneDrive/Pictures/Saved Pictures/Dumplings.jpeg",rating:"★★★★☆"},
+  {name:"Mapo Tofu",desc:"Soft tofu in spicy bean sauce with minced pork and Sichuan pepper.",price:180,img:"c:/Users/manjula/OneDrive/Pictures/Saved Pictures/Mapo Tofu.jpeg",rating:"★★★☆☆"},
+  {name:"Chow Mein",desc:"Fried noodles mixed with vegetables, meat, and savory sauce.",price:200,img:"c:/Users/manjula/OneDrive/Pictures/Saved Pictures/Chow Mein.jpeg",rating:"★★★★☆"},
+  {name:"Spring Rolls",desc:"Golden, crispy rolls stuffed with seasoned vegetables or meat.",price:150,img:"c:/Users/manjula/OneDrive/Pictures/Saved Pictures/Spring Rolls.jpeg",rating:"★★★☆☆"},
+  {name:"Hot & Sour Soup",desc:"Spicy and tangy soup with tofu, mushrooms, and bamboo shoots.",price:170,img:"c:/Users/manjula/OneDrive/Pictures/Saved Pictures/Hot & Sour Soup.jpeg",rating:"★★★☆☆"},
+  {name:"Lo Mein",desc:"Soft egg noodles tossed with vegetables and soy-based sauce.",price:200,img:"c:/Users/manjula/OneDrive/Pictures/Saved Pictures/Lo Mein.jpeg",rating:"★★★★☆"},
+  {name:"Dim Sum",desc:"Variety of bite-sized dishes served with tea, a Cantonese tradition.",price:250,img:"c:/Users/manjula/OneDrive/Pictures/Saved Pictures/Dim Sum.jpeg",rating:"★★★★☆"},
+  {name:"Sesame Chicken",desc:"Crispy chicken coated in a sweet sesame glaze.",price:220,img:"c:/Users/manjula/OneDrive/Pictures/Saved Pictures/Sesame Chicken.jpeg",rating:"★★★★☆"},
+  {name:"Chinese Broccoli",desc:"Blanched greens served with rich oyster sauce.",price:180,img:"c:/Users/manjula/OneDrive/Pictures/Saved Pictures/Chinese Broccoli.jpeg",rating:"★★★☆☆"},
+  {name:"Wonton Soup",desc:"Clear broth with delicate dumplings filled with pork or shrimp.",price:170,img:"c:/Users/manjula/OneDrive/Pictures/Saved Pictures/Wonton Soup.jpeg",rating:"★★★☆☆"},
+  {name:"Char Siu",desc:"Barbecued pork glazed in honey and Chinese five-spice.",price:250,img:"c:/Users/manjula/OneDrive/Pictures/Saved Pictures/Char Siu.jpeg",rating:"★★★★☆"}
+];
+
+function getAllDishes() {
+  const extras = JSON.parse(localStorage.getItem('chinese_extra_dishes') || '[]');
+  const details = JSON.parse(localStorage.getItem('chinese_extra_details') || '{}');
+  const combined = [...defaultDishes];
+  extras.forEach(name => {
+    const d = details[name] || {};
+    combined.push({ name, price: d.price || 0, desc: d.desc || '', rating: d.rating || '★★★☆☆', img: d.img || 'https://via.placeholder.com/300x200?text=New+Dish' });
+  });
+  return combined;
+}
+
+// 🔹 Render all dishes including paused/unavailable ones
+function renderDishes(){
+  const statuses = JSON.parse(localStorage.getItem("crave_dishes_status_chinese") || "{}");
+  const container = document.getElementById("dishContainer");
+  container.innerHTML="";
+  const dishes = getAllDishes();
+  dishes.forEach(dish=>{
+    const status = statuses[dish.name] || "active";
+    const card=document.createElement("div");
+    card.className="dish-card";
+    card.innerHTML=`
+      <img src="${dish.img}" alt="${dish.name}">
+      <div class="dish-info"><h3>${dish.name}</h3><p>${dish.desc}</p></div>
+      <div class="price-rating-block">
+        <span class="price-block">₹${dish.price}</span>
+        <span class="rating">${dish.rating}</span>
+      </div>
+      <button ${status==='paused'?'disabled style="background:#ccc;cursor:not-allowed;"':''}
+      onclick="addToCart('${dish.name}',${dish.price},'${dish.img}','${dish.desc}')">Add to Cart</button>
+      ${status==='paused'?'<div class="out-of-stock">Currently Unavailable</div>':""}
+    `;
+    container.appendChild(card);
+  });
+}
+
+function addToCart(name, price, image, description) {
+  let cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+  let existing = cartItems.find(item => item.name === name);
+  if (existing) existing.quantity += 1;
+  else cartItems.push({ name, price, image, description, quantity: 1 });
+  localStorage.setItem('cartItems', JSON.stringify(cartItems));
+  showPopup(`${name} added to cart!`);
+}
+
+function showPopup(msg){
+  const p=document.getElementById("popup");
+  p.textContent=msg; p.classList.add("show");
+  setTimeout(()=>p.classList.remove("show"),2000);
+}
+
+// 🔹 Listen for admin updates (pause/resume)
+window.addEventListener("storage",e=>{
+  if(e.key==="crave_dishes_status_chinese" || e.key==="chinese_extra_dishes" || e.key==="chinese_extra_details") {
+    renderDishes();
+  }
+});
+
+// 🔹 Auto-refresh every 2s to stay in sync even if same tab
+setInterval(renderDishes, 2000);
+
+renderDishes();
+</script>
+</body>
+</html>

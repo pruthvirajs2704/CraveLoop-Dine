@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Your Cart – CraveLoop Dine</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
+<style>
+  * {margin:0; padding:0; box-sizing:border-box;}
+  body {
+    font-family: "Poppins", sans-serif;
+    background: linear-gradient(135deg, #ffe5b4, #ffd9a0, #ffc17f);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow-x: hidden;
+    color: #4e2c00;
+  }
+  header {
+    background: #ffb84d;
+    color: #fff;
+    width: 100%;
+    text-align: center;
+    padding: 20px 0;
+    font-size: 2.2rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    box-shadow: 0 4px 10px rgba(78, 44, 0, 0.2);
+    position: relative;
+    animation: fadeInDown 1s ease-in-out;
+  }
+  @keyframes fadeInDown {
+    from {opacity: 0; transform: translateY(-40px);}
+    to {opacity: 1; transform: translateY(0);}
+  }
+  .back-btn {
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: #fff;
+    color: #ffb84d;
+    border: 2px solid #ffb84d;
+    padding: 8px 20px;
+    border-radius: 20px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+  }
+  .back-btn:hover {
+    background: #ffe5b4;
+    color: #4e2c00;
+    transform: translateY(-50%) scale(1.05);
+  }
+  .cart-container {
+    width: 90%;
+    max-width: 1100px;
+    margin-top: 40px;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(8px);
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(78, 44, 0, 0.2);
+    padding: 20px 30px;
+    animation: fadeInUp 1s ease-in-out;
+  }
+  @keyframes fadeInUp {
+    from {opacity: 0; transform: translateY(40px);}
+    to {opacity: 1; transform: translateY(0);}
+  }
+  .cart-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid rgba(78, 44, 0, 0.2);
+    padding: 15px 0;
+    transition: transform 0.3s ease;
+  }
+  .cart-item:hover {
+    transform: scale(1.02);
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 10px;
+  }
+  .cart-item img {
+    width: 100px; height: 100px; border-radius: 10px;
+    object-fit: cover; margin-right: 20px;
+  }
+  .item-details {flex: 1; display: flex; flex-direction: column;}
+  .item-details h3 {font-size: 1.2rem; color: #d26900; margin-bottom: 5px;}
+  .item-details p {font-size: 0.95rem; color: #704400;}
+  .item-price {font-weight: 600; font-size: 1.1rem; color: #d26900;}
+  .quantity {display: flex; align-items: center; gap: 10px;}
+  .quantity button {
+    background: #ffb84d;
+    color: #4e2c00;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: 0.3s;
+    font-weight: 600;
+  }
+  .quantity button:hover {background: #ffd699; transform: scale(1.1);}
+  .remove-btn {
+    background: #d14d00; color: white;
+    border: none; padding: 8px 15px; border-radius: 5px;
+    cursor: pointer; font-weight: 600;
+    transition: background 0.3s ease;
+  }
+  .remove-btn:hover {background: #9a2900;}
+  .cart-summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 2px solid rgba(78, 44, 0, 0.2);
+  }
+  .cart-summary h2 {font-size: 1.5rem; color: #4e2c00;}
+  .checkout-btn {
+    background: linear-gradient(90deg, #ffb84d, #f6a600);
+    color: #fff;
+    padding: 12px 25px;
+    border-radius: 10px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    font-size: 1.1rem;
+    transition: background 0.3s ease, transform 0.3s ease;
+  }
+  .checkout-btn:hover {background: linear-gradient(90deg, #ffd699, #ffaa00); transform: scale(1.05);}
+  .empty {text-align: center; padding: 50px 0; color: #704400; font-size: 1.2rem;}
+</style>
+</head>
+<body>
+<header>
+  🛒 Your Cart
+  <button class="back-btn" onclick="goBack()">← Back</button>
+</header>
+
+<div class="cart-container" id="cartContainer">
+  <div class="empty">Your cart is empty. Add delicious dishes from our menu!</div>
+</div>
+
+<script>
+const cartContainer = document.getElementById("cartContainer");
+
+// Load cart from localStorage; ensure every item has qty
+let cartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
+cartItems = cartItems.map(item => ({
+  ...item,
+  qty: Number(item.qty) > 0 ? Number(item.qty) : 1
+}));
+
+// Render cart items dynamically
+function renderCart() {
+  if (cartItems.length === 0) {
+    cartContainer.innerHTML = `
+      <div class="empty">
+        Your cart is empty. Add delicious dishes from our menu!
+      </div>
+    `;
+    return;
+  }
+
+  // Render all items
+  cartContainer.innerHTML = `
+    ${cartItems
+      .map(
+        (item, index) => `
+      <div class="cart-item" data-index="${index}">
+        <img src="${item.image}" alt="${item.name}" />
+        <div class="item-details">
+          <h3>${item.name}</h3>
+          <p>${item.description || ""}</p>
+          <div class="quantity">
+            <button onclick="changeQty(${index}, -1)">−</button>
+            <span id="qty-${index}">${item.qty}</span>
+            <button onclick="changeQty(${index}, 1)">+</button>
+          </div>
+        </div>
+        <div class="item-price" id="price-${index}">
+          ₹${(item.price * item.qty).toLocaleString("en-IN")}
+        </div>
+        <button class="remove-btn" onclick="removeItem(${index})">Remove</button>
+      </div>
+    `
+      )
+      .join("")}
+
+    <div class="cart-summary">
+      <h2>Total: ₹${getTotal().toLocaleString("en-IN")}</h2>
+      <button class="checkout-btn" onclick="checkout()">Order Now</button>
+    </div>
+  `;
+}
+
+// Increase or decrease item quantity
+function changeQty(index, delta) {
+  if (!cartItems[index]) return;
+  cartItems[index].qty += delta;
+
+  if (cartItems[index].qty <= 0) {
+    cartItems.splice(index, 1);
+  }
+
+  localStorage.setItem("cartItems", JSON.stringify(cartItems));
+  renderCart();
+}
+
+// Remove specific item
+function removeItem(index) {
+  cartItems.splice(index, 1);
+  localStorage.setItem("cartItems", JSON.stringify(cartItems));
+  renderCart();
+}
+
+// Calculate total amount
+function getTotal() {
+  return cartItems.reduce((sum, item) => sum + (item.price * item.qty), 0);
+}
+
+// Checkout and redirect to payment
+function checkout() {
+  if (cartItems.length === 0) {
+    alert("Your cart is empty!");
+    return;
+  }
+
+  localStorage.setItem("cartItems", JSON.stringify(cartItems));
+  alert("Redirecting to payment page...");
+  window.location.href = "payment.html";
+}
+
+// Go back to home/menu page
+function goBack() {
+  window.location.href = "home.html";
+}
+
+// Initial render
+renderCart();
+</script>
+</body>
+</html>

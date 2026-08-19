@@ -1,0 +1,437 @@
+<html>
+<head>
+<title>CraveLoop Dine – Live Order Tracking</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{
+  font-family:'Poppins',sans-serif;
+  background:linear-gradient(135deg,#ffe6cc,#ff7b29);
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  color:#333;
+  padding:30px 10px;
+}
+header{
+  background:#fff;
+  color:#ff7b29;
+  width:100%;
+  text-align:center;
+  padding:20px 10px;
+  font-size:1.8rem;
+  font-weight:700;
+  box-shadow:0 4px 12px rgba(0,0,0,0.1);
+  border-radius:12px;
+  margin-bottom:30px;
+  position:relative;
+}
+.back-btn{
+  position:absolute;
+  left:20px;
+  top:50%;
+  transform:translateY(-50%);
+  background:#ff7b29;
+  color:#fff;
+  border:none;
+  padding:8px 16px;
+  font-size:0.9rem;
+  border-radius:8px;
+  cursor:pointer;
+  transition:background 0.3s;
+}
+.back-btn:hover{background:#e86a19;}
+
+/* EMPTY STATE */
+.empty-message{
+  background:#fff;
+  padding:60px;
+  border-radius:20px;
+  box-shadow:0 8px 20px rgba(0,0,0,0.1);
+  text-align:center;
+  color:#777;
+  font-size:1.2rem;
+  width:90%;
+  max-width:600px;
+}
+
+/* TRACKING CONTAINER */
+.tracking-container{
+  background:#fff;
+  width:90%;
+  max-width:800px;
+  border-radius:20px;
+  padding:40px 30px;
+  position:relative;
+  box-shadow:0 8px 30px rgba(0,0,0,0.1);
+  overflow:hidden;
+}
+.tracking-line{
+  position:absolute;
+  top:70px;
+  left:40px;
+  width:6px;
+  height:80%;
+  background:#e0e0e0;
+  border-radius:4px;
+}
+.tracking-progress{
+  position:absolute;
+  top:70px;
+  left:40px;
+  width:6px;
+  height:0%;
+  background:linear-gradient(to bottom,#40bc54,#7dd87d);
+  border-radius:4px;
+  transition:height 1s ease;
+}
+
+.stage{
+  display:flex;
+  align-items:flex-start;
+  position:relative;
+  margin-bottom:60px;
+  transition:all .4s ease;
+}
+.stage:last-child{margin-bottom:0;}
+.icon{
+  width:25px;
+  height:25px;
+  background:#ccc;
+  border-radius:50%;
+  flex-shrink:0;
+  margin-right:25px;
+  border:4px solid #fff;
+  z-index:5;
+  transition:background .5s ease;
+}
+.stage.active .icon{background:#ff7b29;}
+.stage.complete .icon{background:#40bc54;}
+.stage-content{
+  background:#f9f9f9;
+  padding:15px 20px;
+  border-radius:15px;
+  box-shadow:0 4px 12px rgba(0,0,0,0.05);
+  flex:1;
+  transition:background .5s ease, transform .3s ease;
+}
+.stage.active .stage-content{background:#fff8f3; transform:scale(1.02);}
+.stage.complete .stage-content{background:#f2fff5;}
+.stage-content h3{
+  font-size:1.2rem;
+  font-weight:700;
+  color:#ff7b29;
+  margin-bottom:6px;
+}
+.stage-content p{
+  color:#5b3c21;
+  font-size:1rem;
+}
+.time-remaining{
+  position:absolute;
+  right:15px;
+  top:-5px;
+  font-weight:600;
+  color:#777;
+  font-size:0.9rem;
+}
+
+/* DELIVERY SECTION */
+.delivery-road{
+  margin-top:25px;
+  position:relative;
+  height:200px;
+  background:linear-gradient(to top,#eaeaea 40%,#fff 100%);
+  border-radius:15px;
+  overflow:hidden;
+  box-shadow:inset 0 3px 10px rgba(0,0,0,0.08);
+}
+.road{
+  position:absolute;
+  bottom:40px;
+  left:0;
+  width:100%;
+  height:80px;
+  background:#2f2f2f;
+  border-top:6px dashed #fff;
+}
+.landmarks{
+  position:absolute;
+  top:15px;
+  left:5%;
+  right:5%;
+  display:flex;
+  justify-content:space-between;
+  font-size:1.1rem;
+  color:#ff7b29;
+  font-weight:600;
+}
+.bike{
+  position:absolute;
+  bottom:75px;
+  left:5%;
+  width:60px;
+  transition:left 1s linear;
+}
+.bike img{
+  width:60px;
+  animation:bounce 1s infinite alternate;
+}
+@keyframes bounce{to{transform:translateY(-6px);}}
+
+/* POPUP */
+.popup-bg{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.4);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  z-index:2000;
+  display:none;
+}
+.popup-card{
+  background:white;
+  padding:40px 55px;
+  border-radius:14px;
+  text-align:center;
+  animation:pop 0.6s ease;
+  box-shadow:0 6px 30px rgba(0,0,0,0.1);
+}
+@keyframes pop{
+  0%{transform:scale(0);}
+  80%{transform:scale(1.1);}
+  100%{transform:scale(1);}
+}
+.popup-card span{
+  font-size:2rem;
+  display:block;
+  margin-bottom:8px;
+}
+.popup-card h3{
+  color:#ff7b29;
+  font-size:1.4rem;
+  margin-bottom:6px;
+}
+.popup-card p{color:#555;font-size:1rem;}
+</style>
+</head>
+<body>
+
+<header>
+  <button class="back-btn" onclick="window.location.href='home.html'">← Back</button>
+  🍔 CraveLoop Dine – Live Order Tracking 🚴‍♂️
+</header>
+
+<!-- EMPTY STATE -->
+<div id="emptyMessage" class="empty-message" style="display:none;">
+  🛒 No items placed or confirmed yet.<br><br>
+  Please confirm your order from the payment page.
+</div>
+
+<!-- TRACKING CONTAINER -->
+<div class="tracking-container" id="trackingContainer" style="display:none;">
+  <div class="tracking-line"></div>
+  <div class="tracking-progress" id="progressLine"></div>
+
+  <div class="stage" id="s1">
+    <div class="icon"></div>
+    <div class="stage-content">
+      <div class="time-remaining" id="t1">01:00</div>
+      <h3 id="h1">🕓 Waiting for Confirmation...</h3>
+      <p id="p1">Your order details are being processed.</p>
+    </div>
+  </div>
+
+  <div class="stage" id="s2">
+    <div class="icon"></div>
+    <div class="stage-content">
+      <div class="time-remaining" id="t2">06:00</div>
+      <h3>👨‍🍳 Preparing Your Order</h3>
+      <p>Our chefs are preparing your delicious food with utmost care.</p>
+    </div>
+  </div>
+
+  <div class="stage" id="s3">
+    <div class="icon"></div>
+    <div class="stage-content">
+      <div class="time-remaining" id="t3">01:00</div>
+      <h3>📦 Packing Order</h3>
+      <p>Your meal is being carefully packed and sealed for delivery.</p>
+    </div>
+  </div>
+
+  <div class="stage" id="s4">
+    <div class="icon"></div>
+    <div class="stage-content">
+      <div class="time-remaining" id="t4">10:00</div>
+      <h3>🚴‍♂️ Out for Delivery</h3>
+      <p>Your order is on the way! Our delivery agent is heading toward you.</p>
+
+      <div class="delivery-road">
+        <div class="landmarks"><div>🏢 Restaurant</div><div>🏠 You</div></div>
+        <div class="road"></div>
+        <div class="bike" id="bike"><img src="https://cdn-icons-png.flaticon.com/512/190/190411.png" alt="bike"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- POPUP -->
+<div class="popup-bg" id="popup">
+  <div class="popup-card" id="popupCard">
+    <span>🎉</span>
+    <h3>Stage Completed!</h3>
+    <p>Your next process will begin shortly...</p>
+  </div>
+</div>
+
+<script>
+const userEmail = localStorage.getItem('userEmail') || 'guest';
+const orderConfirmedKey = 'orderConfirmed_' + userEmail;
+const orderStartKey = 'orderStartTime_' + userEmail;
+
+// ✅ Check if confirmed order exists from payment.html
+const orderConfirmed = localStorage.getItem(orderConfirmedKey);
+
+const emptyMessage = document.getElementById('emptyMessage');
+const trackingContainer = document.getElementById('trackingContainer');
+
+if (orderConfirmed === 'true') {
+  emptyMessage.style.display = 'none';
+  trackingContainer.style.display = 'block';
+  startTracking();
+} else {
+  emptyMessage.style.display = 'block';
+  trackingContainer.style.display = 'none';
+}
+
+function startTracking(){
+const stages = [
+  {id:"s1",time:60,msg:"Order Confirmed Successfully!"},
+  {id:"s2",time:360,msg:"Cooking Completed!"},
+  {id:"s3",time:60,msg:"Order Packed and Ready to Go!"},
+  {id:"s4",time:600,msg:"Order Delivered! Enjoy your meal 🍽️"}
+];
+
+let orderStartTime = localStorage.getItem(orderStartKey);
+if(!orderStartTime){
+  orderStartTime = Date.now();
+  localStorage.setItem(orderStartKey, orderStartTime);
+}
+
+const elapsed = Math.floor((Date.now() - orderStartTime) / 1000);
+let totalPassed = 0, currentStage = 0;
+for(let i=0;i<stages.length;i++){
+  if(elapsed >= totalPassed + stages[i].time){
+    totalPassed += stages[i].time;
+    currentStage = i+1;
+  } else break;
+}
+if(currentStage >= stages.length) currentStage = stages.length - 1;
+let remaining = stages[currentStage].time - (elapsed - totalPassed);
+if(remaining < 0) remaining = 0;
+
+const popup=document.getElementById('popup');
+const popupCard=document.getElementById('popupCard');
+const progressLine=document.getElementById('progressLine');
+const bike=document.getElementById('bike');
+let interval;
+
+function pad(n){return n<10?"0"+n:n;}
+
+function updateTimers(){
+  stages.forEach((stg,i)=>{
+    const el=document.getElementById('t'+(i+1));
+    let secLeft;
+    if(i<currentStage) secLeft=0;
+    else if(i===currentStage) secLeft=remaining;
+    else secLeft=stg.time;
+    const m=Math.floor(secLeft/60),s=secLeft%60;
+    el.innerText=`${pad(m)}:${pad(s)}`;
+  });
+}
+
+function updateStageVisuals(){
+  stages.forEach((stg,i)=>{
+    const el=document.getElementById(stg.id);
+    el.classList.remove('active','complete');
+    if(i<currentStage) el.classList.add('complete');
+    else if(i===currentStage) el.classList.add('active');
+  });
+  const height=((currentStage)/(stages.length-1))*80;
+  progressLine.style.height=height+"%";
+}
+
+function showPopup(msg,isFinal=false){
+  popupCard.querySelector('h3').innerText = isFinal ? "Order Delivered!" : "Stage Completed!";
+  popupCard.querySelector('p').innerText = msg;
+  popup.style.display='flex';
+  setTimeout(()=>popup.style.display='none',2500);
+}
+
+function updateFirstStageText(){
+  const h1=document.getElementById('h1');
+  const p1=document.getElementById('p1');
+  if(currentStage>0 || (currentStage===0 && remaining<=0)){
+    h1.innerText="✅ Order Confirmed";
+    p1.innerText="Your order has been confirmed successfully!";
+  } else {
+    h1.innerText="🕓 Waiting for Confirmation...";
+    p1.innerText="Your order details are being processed.";
+  }
+}
+
+function tick(){
+  remaining--;
+  updateFirstStageText();
+  if(currentStage===3){
+    const progress=(stages[3].time-remaining)/stages[3].time;
+    bike.style.left=(5+progress*90)+"%";
+  }
+
+  if(remaining<=0){
+    showPopup(stages[currentStage].msg, currentStage===3);
+    document.getElementById(stages[currentStage].id).classList.add('complete');
+    currentStage++;
+
+    // ✅ UPDATE ADMIN ORDER STATUS WHEN DELIVERED
+    if(currentStage >= stages.length){
+      // Update the adminOrders list with delivered status
+      let adminOrders = JSON.parse(localStorage.getItem('adminOrders') || '[]');
+      adminOrders = adminOrders.map(order => {
+        if (order.user === userEmail || order.email === userEmail) {
+          order.status = 'Delivered'; // Update the status
+        }
+        return order;
+      });
+      localStorage.setItem('adminOrders', JSON.stringify(adminOrders));
+
+      // ✅ Show popup and alert for delivery completion
+      alert("✅ Order delivered successfully! Status updated in Admin Orders.");
+
+      clearInterval(interval);
+      progressLine.style.height="100%";
+
+      // Clear order tracking info
+      localStorage.removeItem(orderStartKey);
+      localStorage.removeItem(orderConfirmedKey);
+      return;
+    }
+
+    remaining=stages[currentStage].time;
+  }
+  updateStageVisuals();
+  updateTimers();
+}
+
+updateStageVisuals();
+updateTimers();
+updateFirstStageText();
+interval=setInterval(tick,1000);
+}
+</script>
+
+</body>
+</html>

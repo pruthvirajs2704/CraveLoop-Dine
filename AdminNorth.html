@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Admin — North Indian Dishes | CraveLoop Dine</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --primary: #4e73df;
+    --secondary: #1cc88a;
+    --bg-content: #f8f9fc;
+    --text-dark: #333;
+  }
+
+  * {margin:0; padding:0; box-sizing:border-box; font-family:'Poppins',sans-serif;}
+  body {background:var(--bg-content); color:var(--text-dark); min-height:100vh;}
+
+  header {
+    background:var(--primary);
+    color:#fff;
+    padding:20px 35px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    box-shadow:0 4px 10px rgba(0,0,0,0.15);
+  }
+  header h1 {font-size:1.8rem;}
+  header button {
+    background:#fff;
+    border:none;
+    padding:8px 18px;
+    border-radius:25px;
+    font-weight:600;
+    color:var(--primary);
+    cursor:pointer;
+    transition:all .3s ease;
+  }
+  header button:hover {transform:scale(1.07); background:#eef2ff;}
+
+  main {padding:30px;}
+  h2 {text-align:center; margin-bottom:20px; color:var(--primary);}
+
+  .dish-list {
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+    gap:20px;
+  }
+
+  .dish-card {
+    background:white;
+    border-radius:15px;
+    box-shadow:0 4px 15px rgba(0,0,0,0.08);
+    padding:20px;
+    transition:transform .3s ease;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+  }
+  .dish-card:hover {transform:translateY(-5px);}
+  .dish-info h3 {font-size:1.2rem; color:var(--primary); margin-bottom:5px;}
+  .dish-info p {font-size:.9rem; color:#555; margin-bottom:8px;}
+  .dish-info span.amount {display:block; font-weight:600; color:var(--secondary); margin-bottom:8px;}
+
+  .dish-status {font-size:.9rem; margin-bottom:8px;}
+  .status-active {color:var(--secondary); font-weight:600;}
+  .status-paused {color:#e74a3b; font-weight:600;}
+
+  .admin-buttons {
+    text-align:center;
+  }
+  .toggle-btn {
+    border:none;
+    padding:6px 14px;
+    border-radius:20px;
+    font-weight:600;
+    cursor:pointer;
+    transition:all .3s ease;
+    background:var(--primary);
+    color:#fff;
+  }
+  .toggle-btn.paused {background:gray;}
+  .toggle-btn:hover {
+    transform:scale(1.05);
+    box-shadow:0 4px 10px rgba(0,0,0,0.2);
+  }
+
+  .add-btn {
+    position:fixed;
+    bottom:30px;
+    right:30px;
+    background:var(--secondary);
+    color:#fff;
+    border:none;
+    border-radius:50%;
+    width:60px;
+    height:60px;
+    font-size:2rem;
+    box-shadow:0 6px 15px rgba(0,0,0,0.2);
+    cursor:pointer;
+    transition:all .3s ease;
+  }
+  .add-btn:hover {transform:rotate(90deg) scale(1.1);}
+
+  /* Modal */
+  .modal {
+    display:none;
+    position:fixed;
+    top:0; left:0; width:100%; height:100%;
+    background:rgba(0,0,0,0.4);
+    justify-content:center;
+    align-items:center;
+    z-index:999;
+  }
+  .modal.active {display:flex;}
+  .modal-content {
+    background:#fff;
+    border-radius:15px;
+    padding:25px;
+    width:350px;
+    box-shadow:0 5px 15px rgba(0,0,0,0.2);
+    animation:pop .3s ease;
+    position:relative;
+  }
+  @keyframes pop {from{transform:scale(0.8);opacity:0;}to{transform:scale(1);opacity:(1);}}
+  .modal-content h3 {text-align:center; color:var(--primary); margin-bottom:10px;}
+  .modal-content input, .modal-content textarea {
+    width:100%; padding:8px 10px; margin:6px 0;
+    border:1px solid #ccc; border-radius:8px; font-size:.9rem;
+  }
+  .modal-content button {
+    margin-top:8px;
+    width:100%;
+    padding:8px;
+    border:none;
+    border-radius:8px;
+    background:var(--primary);
+    color:#fff;
+    font-weight:600;
+    cursor:pointer;
+    transition:all .3s ease;
+  }
+  .modal-content button:hover {transform:scale(1.03);}
+  .close-modal {
+    position:absolute;
+    top:12px;
+    right:20px;
+    color:#666;
+    font-size:1.5rem;
+    cursor:pointer;
+  }
+
+  footer {
+    text-align:center;
+    padding:18px;
+    background:var(--primary);
+    color:#fff;
+    margin-top:40px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Admin — North Indian Dishes</h1>
+  <button onclick="window.location.href='AdminHome.html'">← Back to Admin Home</button>
+</header>
+
+<main>
+  <h2>Manage North Indian Dishes</h2>
+  <div class="dish-list" id="dishList"></div>
+</main>
+
+<button class="add-btn" onclick="openModal()">+</button>
+
+<!-- Modal for Add Dish -->
+<div class="modal" id="modal">
+  <div class="modal-content">
+    <span class="close-modal" onclick="closeModal()">&times;</span>
+    <h3>Add New Dish</h3>
+    <input type="text" id="dishName" placeholder="Dish Name" required>
+    <textarea id="dishDesc" placeholder="Short Description" rows="2"></textarea>
+    <input type="number" id="dishAmount" placeholder="Dish Price (₹)">
+    <button onclick="addDish()">Add Dish</button>
+    <button style="background:gray;" onclick="closeModal()">Back</button>
+  </div>
+</div>
+
+<footer>© 2025 CraveLoop Dine — Admin Panel 🍛</footer>
+
+<script>
+const defaultDishes = [
+  { name:"Butter Chicken", desc:"Creamy tomato-based chicken curry.", amount:250 },
+  { name:"Paneer Tikka", desc:"Grilled paneer cubes with spices.", amount:200 },
+  { name:"Dal Makhani", desc:"Rich buttery lentil curry.", amount:180 },
+  { name:"Chole Bhature", desc:"Spicy chickpeas with fried bread.", amount:160 },
+  { name:"Rajma Chawal", desc:"Kidney beans with rice.", amount:150 },
+  { name:"Palak Paneer", desc:"Spinach and paneer curry.", amount:190 },
+  { name:"Tandoori Chicken", desc:"Marinated grilled chicken.", amount:240 },
+  { name:"Aloo Gobi", desc:"Spiced potato and cauliflower.", amount:140 },
+  { name:"Malai Kofta", desc:"Soft paneer balls in rich gravy.", amount:210 },
+  { name:"Paneer Butter Masala", desc:"Creamy paneer in tomato gravy.", amount:220 },
+  { name: "Aloo Paratha", desc: "Stuffed flatbread made with spicy potato filling and butter.", amount:60 },
+  { name: "Naan",desc: "Soft tandoor-baked flatbread brushed with ghee.",amount:50 },
+  { name: "Roti / Phulka", desc: "Light wholesome whole-wheat flatbread staple.", amount:40},
+  { name: "Samosa",desc: "Golden crisp pastry filled with spiced potatoes and peas.",amount: 30},
+  { name: "Chaat", desc: "A delightful mix of sweet, spicy, and tangy Indian street flavors.",amount:50}
+];
+
+let dishStatus = JSON.parse(localStorage.getItem("crave_dishes_status_north") || "{}");
+let extraDishes = JSON.parse(localStorage.getItem("extra_dishes_north") || "[]");
+const list = document.getElementById("dishList");
+
+function render(){
+  list.innerHTML="";
+  const allDishes=[...defaultDishes,...extraDishes];
+  allDishes.forEach(dish=>{
+    const name = dish.name || dish;
+    const desc = dish.desc || "Delicious North Indian dish.";
+    const amount = dish.amount || 150;
+    const status = dishStatus[name] || "active";
+
+    const card=document.createElement("div");
+    card.className="dish-card";
+    card.innerHTML=`
+      <div class="dish-info">
+        <h3>${name}</h3>
+        <p>${desc}</p>
+        <span class="amount">₹${amount}</span>
+        <p>Status: <span class="dish-status ${status==='stopped'?'status-paused':'status-active'}">${status==='stopped'?'Paused':'Active'}</span></p>
+      </div>
+      <div class="admin-buttons">
+        <button class="toggle-btn ${status==='stopped'?'paused':''}" onclick="toggleDish('${name}')">${status==='stopped'?'Continue':'Pause'}</button>
+      </div>
+    `;
+    list.appendChild(card);
+  });
+  localStorage.setItem("crave_dishes_status_north", JSON.stringify(dishStatus));
+}
+
+function toggleDish(name){
+  dishStatus[name] = dishStatus[name]==='stopped' ? 'active' : 'stopped';
+  localStorage.setItem("crave_dishes_status_north", JSON.stringify(dishStatus));
+  render();
+  // Trigger storage event for sync
+  window.dispatchEvent(new Event("storage"));
+}
+
+/* Modal Handling */
+const modal=document.getElementById("modal");
+function openModal(){modal.classList.add("active");}
+function closeModal(){modal.classList.remove("active");}
+
+function addDish(){
+  const name=document.getElementById("dishName").value.trim();
+  const desc=document.getElementById("dishDesc").value.trim() || "Delicious North Indian Dish.";
+  const amount=parseFloat(document.getElementById("dishAmount").value.trim()) || 150;
+  if(!name){alert("Please enter dish name");return;}
+  extraDishes.push({ name, desc, amount });
+  dishStatus[name]="active";
+  localStorage.setItem("extra_dishes_north",JSON.stringify(extraDishes));
+  localStorage.setItem("crave_dishes_status_north",JSON.stringify(dishStatus));
+  render();
+  closeModal();
+  document.querySelectorAll(".modal-content input, .modal-content textarea").forEach(i=>i.value="");
+}
+
+render();
+</script>
+
+</body>
+</html>

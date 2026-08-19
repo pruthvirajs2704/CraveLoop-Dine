@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>South Indian Dishes - CraveLoop Dine</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+  }
+
+  body {
+    background: linear-gradient(135deg, #fff8e1 0%, #fff3e0 50%, #ffecb3 100%);
+    color: #333;
+    overflow-x: hidden;
+  }
+
+  header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: linear-gradient(90deg, #f57c00, #ffb74d);
+    color: #fff;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    padding: 18px 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+  }
+
+  header h1 {
+    flex: 1;
+    text-align: center;
+    font-size: 2.2rem;
+    letter-spacing: 1px;
+    font-weight: 700;
+    text-shadow: 1px 2px 6px rgba(0,0,0,0.25);
+  }
+
+  .header-buttons {
+    position: absolute;
+    top: 50%;
+    right: 35px;
+    transform: translateY(-50%);
+    display: flex;
+    gap: 12px;
+  }
+
+  .header-buttons button {
+    background: linear-gradient(45deg, #fff3e0, #ffecb3);
+    color: #6d4c41;
+    border: none;
+    padding: 8px 18px;
+    border-radius: 25px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    box-shadow: 0 5px 12px rgba(0,0,0,0.15);
+    transition: all 0.3s ease;
+  }
+
+  .header-buttons button:hover {
+    transform: scale(1.08);
+    background: linear-gradient(45deg, #fff9e6, #ffffff);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+  }
+
+  .popup {
+    position: fixed;
+    top: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #43a047;
+    color: #fff;
+    padding: 12px 25px;
+    border-radius: 25px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    opacity: 0;
+    z-index: 2000;
+    transition: opacity 0.3s ease, top 0.3s ease;
+  }
+
+  .popup.show {
+    opacity: 1;
+    top: 100px;
+  }
+
+  main {
+    padding-top: 110px;
+    padding-left: 25px;
+    padding-right: 25px;
+  }
+
+  .dish-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 25px;
+    margin: 0 auto;
+    max-width: 1150px;
+  }
+
+  .dish-card {
+    background: #fffaf0;
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+    text-align: center;
+    transition: all 0.3s ease;
+    position: relative;
+  }
+
+  .dish-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 28px rgba(0,0,0,0.12);
+  }
+
+  .dish-card img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    border-bottom: 3px solid #f57c00;
+    transition: transform 0.4s ease;
+  }
+
+  .dish-card:hover img {
+    transform: scale(1.06);
+  }
+
+  .dish-info {
+    padding: 14px;
+  }
+
+  .dish-card h3 {
+    font-size: 1.2rem;
+    margin-bottom: 5px;
+    color: #f57c00;
+  }
+
+  .dish-card p {
+    font-size: 0.9rem;
+    color: #555;
+    margin-bottom: 8px;
+    min-height: 40px;
+  }
+
+  .price-rating-block {
+    background: #ffe6b3;
+    padding: 12px 8px;
+    border-top: 1px solid #ffcc80;
+    border-radius: 0 0 18px 18px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .price-block {
+    background: #ffb74d;
+    padding: 6px 16px;
+    border-radius: 18px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #fff;
+    margin-top: 5px;
+  }
+
+  .rating {
+    color: #fbc02d;
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin-bottom: 4px;
+  }
+
+  .dish-card button {
+    margin: 8px 0 14px 0;
+    padding: 8px 20px;
+    border: none;
+    border-radius: 25px;
+    background: linear-gradient(45deg, #ffb74d, #f57c00);
+    color: #fff;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .dish-card button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 5px 14px rgba(239,108,0,0.4);
+  }
+
+  .unavailable {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0,0,0,0.7);
+    color: #fff;
+    padding: 15px 25px;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 1rem;
+    z-index: 10;
+  }
+
+  footer {
+    text-align: center;
+    padding: 22px;
+    margin-top: 50px;
+    font-size: 0.9rem;
+    background: #ffb74d;
+    border-radius: 10px;
+    border: 1px solid #ffd180;
+    color: #fff;
+    box-shadow: 0 -3px 10px rgba(0,0,0,0.1);
+  }
+
+  @media (max-width: 900px) {
+    .dish-container { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  @media (max-width: 600px) {
+    .dish-container { grid-template-columns: 1fr; }
+    header h1 { font-size: 1.9rem; }
+    .header-buttons { right: 20px; gap: 10px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>South Indian Dishes</h1>
+  <div class="header-buttons">
+    <button onclick="window.location.href='cuisine.html'">← Back</button>
+    <button onclick="window.location.href='cart.html'">🛒 Cart</button>
+  </div>
+</header>
+
+<div class="popup" id="popup">Item added to cart!</div>
+
+<main>
+  <div class="dish-container" id="dishContainer"></div>
+</main>
+
+<footer>
+  © 2025 CraveLoop Dine — Experience the Essence of South India 🌿
+</footer>
+
+<script>
+const dishes = [
+  { name: "Masala Dosa", desc: "Crispy rice and lentil crepe served with chutney and sambar.", price: 65, img: "c:/Users/manjula/OneDrive/Pictures/Saved Pictures/dosa.jpeg", rating: "★★★★★" },
+  { name: "Idly & Vada", desc: "Soft steamed rice cakes paired with crispy lentil fritters.", price: 30, img: "c:/Users/manjula/OneDrive/Pictures/Saved Pictures/idly.jpeg", rating: "★★★★☆" },
+  { name: "Pongal", desc: "Comforting rice-lentil dish cooked with ghee, pepper, and cashews.", price: 50, img: "c:/Users/manjula/OneDrive/Pictures/Saved Pictures/pongal.jpeg", rating: "★★★★☆" },
+  { name: "Upma", desc: "Savory semolina porridge flavored with curry leaves and spices.", price: 50, img: "c:/Users/manjula/OneDrive/Pictures/Saved Pictures/upma.jpeg", rating: "★★★☆☆" },
+  { name: "Bisi Bele Bath", desc: "Spiced lentil-rice dish with tamarind and vegetables.", price: 45, img: "c:/Users/manjula/OneDrive/Pictures/Saved Pictures/bisi bath.jpeg", rating: "★★★★☆" },
+  { name: "Parota", desc: "Layered flatbread, flaky and soft, enjoyed with spicy curry.", price: 45, img: "c:/Users/manjula/OneDrive/Pictures/Saved Pictures/parota.jpeg", rating: "★★★☆☆" },
+  { name: "Uttapam", desc: "Thick rice pancake topped with onions, tomatoes, and chilies.", price: 70, img: "c:/Users/manjula/OneDrive/Pictures/Saved Pictures/uttapam.jpeg", rating: "★★★★☆" },
+  { name: "Curd Rice", desc: "Cooling yogurt rice, tempered with mustard seeds and curry leaves.", price: 35, img: "c:/Users/manjula/OneDrive/Pictures/Saved Pictures/curd rice.jpeg", rating: "★★★★☆" },
+  { name: "Chicken Chettinad", desc: "Fiery chicken curry from Chettinad, rich in spices and flavor.", price: 150, img: "c:/Users/manjula/OneDrive/Pictures/Saved Pictures/chicken.jpeg", rating: "★★★★★" },
+  { name: "Paniyaram", desc: "Golden-brown dumplings made from dosa batter, crisp outside soft inside.", price: 50, img: "c:/Users/manjula/OneDrive/Pictures/Saved Pictures/paniyaram.jpeg", rating: "★★★☆☆" },
+  { name: "Biryani", desc: "Fragrant spiced rice layered with flavorful meat or vegetables.", price: 150, img: "c:/Users/manjula/OneDrive/Pictures/Saved Pictures/biriyani.jpeg", rating: "★★★★★" },
+  { name: "Appam", desc: "Soft and light rice pancakes with crisp edges, served with stew.", price: 70, img: "c:/Users/manjula/OneDrive/Pictures/Saved Pictures/appam.jpeg", rating: "★★★★☆" },
+  { name: "Lemon Rice", desc: "Zesty lemon rice with turmeric, curry leaves, and green chilies.", price: 30, img: "c:/Users/manjula/OneDrive/Pictures/Saved Pictures/lemon rice.jpeg", rating: "★★★★☆" },
+  { name: "Ragi Ball", desc: "Healthy millet balls enjoyed with sambar or spicy curries.", price: 40, img: "c:/Users/manjula/OneDrive/Pictures/Saved Pictures/ragi ball.jpeg", rating: "★★★☆☆" },
+  { name: "Mangalore Buns", desc: "Sweet, soft banana puris from coastal Karnataka cuisine.", price: 40, img: "c:/Users/manjula/OneDrive/Pictures/Saved Pictures/buns.jpeg", rating: "★★★★☆" }
+];
+
+const dishContainer = document.getElementById("dishContainer");
+
+function loadDishes() {
+  const dishStatus = JSON.parse(localStorage.getItem("crave_dishes_status_south")) || {};
+  dishContainer.innerHTML = "";
+  dishes.forEach(d => {
+    const status = dishStatus[d.name] || "active";
+    const card = document.createElement("div");
+    card.className = "dish-card";
+
+    card.innerHTML = `
+      <img src="${d.img}" alt="${d.name}" />
+      <div class="dish-info">
+        <h3>${d.name}</h3>
+        <p>${d.desc}</p>
+      </div>
+      <div class="price-rating-block">
+        <span class="price-block">₹${d.price}</span>
+        <span class="rating">${d.rating}</span>
+      </div>
+      <button ${status === "paused" ? "disabled style='background:gray;cursor:not-allowed;'" : ""} 
+        onclick="addToCart('${d.name}',${d.price},'${d.img}','${d.desc}')">
+        ${status === "paused" ? "Currently Unavailable" : "Add to Cart"}
+      </button>
+      ${status === "paused" ? "<div class='unavailable'>Currently Unavailable</div>" : ""}
+    `;
+    dishContainer.appendChild(card);
+  });
+}
+
+function addToCart(name, price, image, description) {
+  let cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+  let existing = cartItems.find(item => item.name === name);
+  if (existing) existing.quantity += 1;
+  else cartItems.push({ name, price, image, description, quantity: 1 });
+  localStorage.setItem('cartItems', JSON.stringify(cartItems));
+  showPopup(`${name} added to cart!`);
+}
+
+function showPopup(message) {
+  const popup = document.getElementById('popup');
+  popup.textContent = message;
+  popup.classList.add('show');
+  setTimeout(() => popup.classList.remove('show'), 2000);
+}
+
+// Load dishes initially
+loadDishes();
+
+// 🔄 Auto update when admin changes dish status
+window.addEventListener("storage", (e) => {
+  if (e.key === "crave_dishes_status_south") {
+    loadDishes();
+  }
+});
+
+// 🔁 Custom same-tab event listener
+window.addEventListener("southStatusUpdate", () => loadDishes());
+</script>
+</body>
+</html>

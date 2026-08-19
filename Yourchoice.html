@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mood-Based Food Suggestion 🍽️</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+html, body {
+  height: 100%;
+  margin: 0;
+  overflow-y: auto; /* ✅ Allow page scrolling */
+}
+body {
+  font-family: 'Poppins', sans-serif;
+  background: linear-gradient(120deg, #fc5c7d 0%, #6a82fb 100%);
+  color: #333;
+  position: relative;
+}
+
+/* 🔙 Back Button */
+.back-button {
+  position: fixed;
+  top: 20px;
+  right: 25px;
+  z-index: 100;
+  background: rgba(255,255,255,0.9);
+  color: #6a3b99;
+  font-weight: 600;
+  border: none;
+  border-radius: 25px;
+  padding: 8px 18px;
+  font-size: 0.95rem;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(100,50,150,0.15);
+  transition: all 0.25s ease;
+}
+.back-button:hover {
+  background: linear-gradient(120deg,#6a82fb,#fc5c7d);
+  color: white;
+  transform: scale(1.05);
+}
+
+.emoji-bg {
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+.emoji {
+  position: absolute;
+  font-size: 2rem;
+  opacity: 0.7;
+  animation: floatEmoji 10s linear infinite;
+}
+@keyframes floatEmoji {
+  0% { transform: translateY(0) scale(1);}
+  100% { transform: translateY(-110vh) scale(1.2);}
+}
+
+.wrapper {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 50px 20px;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+  min-height: 100vh;
+}
+
+.header {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: #fff;
+  text-shadow: 0 4px 30px rgba(100,0,100,0.25);
+  text-align: center;
+  margin-bottom: 8px;
+}
+.subheader {
+  font-size: 1rem;
+  color: #f8e7fa;
+  text-align: center;
+  max-width: 400px;
+  margin-bottom: 18px;
+}
+
+.mood-form {
+  background: rgba(255,255,255,0.92);
+  box-shadow: 0 8px 40px rgba(100,50,150,0.1);
+  border-radius: 18px;
+  padding: 20px 25px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 90%;
+  max-width: 350px;
+}
+.mood-form input {
+  font-size: 1.1rem;
+  border: none;
+  border-radius: 22px;
+  padding: 12px 18px;
+  margin-bottom: 14px;
+  width: 100%;
+  background: #f4f2fd;
+  color: #6a3b99;
+  outline: none;
+  text-align: center;
+}
+.mood-form button {
+  font-size: 1rem;
+  padding: 10px 28px;
+  background: linear-gradient(120deg,#6a82fb,#fc5c7d);
+  color: white;
+  border: none;
+  border-radius: 22px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: transform .2s;
+}
+.mood-form button:hover { transform: scale(1.08); }
+
+.suggestion-section {
+  background: rgba(255,255,255,0.97);
+  border-radius: 18px;
+  box-shadow: 0 4px 24px rgba(100,50,130,0.11);
+  padding: 20px 22px;
+  margin-top: 25px;
+  animation: fadeInUp .8s;
+  width: 90%;
+  max-width: 380px;
+  overflow-y: auto;
+  max-height: 60vh; /* ✅ Scrollable suggestion area */
+}
+@keyframes fadeInUp {
+  0% { opacity:0; transform:translateY(16px);}
+  100%{ opacity:1; transform:translateY(0);}
+}
+.suggestion-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #6a3b99;
+  margin-bottom: 10px;
+  text-align: center;
+}
+.suggestion-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.dish-card {
+  background: linear-gradient(120deg,#fc5c7d10,#6a82fb20);
+  border-left: 4px solid #fc5c7d;
+  border-radius: 10px;
+  padding: 10px 14px;
+  color: #442260;
+  font-weight: 500;
+  animation: fadeInCard 0.5s;
+}
+@keyframes fadeInCard {
+  0% { opacity:0; transform:scale(.9);}
+  100%{ opacity:1; transform:scale(1);}
+}
+.suggest-again {
+  background: linear-gradient(120deg,#6a82fb,#fc5c7d);
+  color: white;
+  border: none;
+  border-radius: 22px;
+  padding: 9px 25px;
+  font-size: 1rem;
+  cursor: pointer;
+  font-weight: 600;
+  letter-spacing: .6px;
+  margin-top: 8px;
+  transition: transform .18s;
+}
+.suggest-again:hover {transform: scale(1.06);}
+.suggestion-footer {
+  color: #7a57a0;
+  font-size: .9rem;
+  text-align: center;
+  margin-top: 6px;
+}
+</style>
+</head>
+<body>
+
+<!-- 🔙 Back Button -->
+<button class="back-button" onclick="window.location.href='home.html'">← Back</button>
+
+<div class="emoji-bg" id="emojiBg"></div>
+
+<div class="wrapper">
+  <div class="header">🍽️ Food Mood Matcher</div>
+  <div class="subheader">Enter your mood and discover the perfect dish match from different cuisines!</div>
+  <form class="mood-form" id="moodForm">
+    <input type="text" id="moodInput" placeholder="Type your mood (e.g., happy, sad, tired...)" autocomplete="off">
+    <button type="submit">Suggest Food</button>
+  </form>
+  <div id="suggestionResult"></div>
+</div>
+
+<script>
+// Emoji floating background
+const emojis = ["🍕","🍜","🍛","🍲","🍟","🍔","🍤","🥗","🍣","🥘","🥙","🍩"];
+const emojiBg = document.getElementById("emojiBg");
+for(let i=0;i<20;i++){
+  const el = document.createElement('span');
+  el.className = "emoji";
+  el.textContent = emojis[Math.floor(Math.random()*emojis.length)];
+  el.style.left = Math.random()*100 + "vw";
+  el.style.top = (100 + Math.random()*20) + "vh";
+  el.style.fontSize = (1.5 + Math.random()*1.8) + "rem";
+  el.style.animationDuration = (10 + Math.random()*9) + "s";
+  emojiBg.appendChild(el);
+}
+
+// Mood-food dataset
+const moodMap = {
+  "happy": {
+    msg: "You’re in a joyful mood — go for flavorful, rich, and exciting dishes!",
+    North: ["Butter Chicken","Paneer Butter Masala","Chole Bhature"],
+    South: ["Masala Dosa","Medu Vada","Pongal"],
+    Italian: ["Margherita Pizza","Garlic Bread","White Sauce Pasta"],
+    Chinese: ["Schezwan Fried Rice","Chilli Paneer","Veg Spring Rolls"]
+  },
+  "sad": {
+    msg: "Comforting, warm, or chocolaty dishes that lift your mood.",
+    North: ["Dal Makhani","Rajma Chawal","Aloo Paratha"],
+    South: ["Idli Sambhar","Lemon Rice","Rasam Rice"],
+    Italian: ["Chocolate Lava Cake","Pasta Alfredo","Tiramisu"],
+    Chinese: ["Manchurian Rice Bowl","Hakka Noodles","Sweet Corn Soup"]
+  },
+  "tired": {
+    msg: "Energizing yet light meals that refresh you quickly.",
+    North: ["Paneer Tikka Roll","Veg Pulao","Dal Khichdi"],
+    South: ["Upma","Idli Sambhar","Curd Rice"],
+    Italian: ["Veggie Pasta","Bruschetta","Mushroom Risotto"],
+    Chinese: ["Hakka Noodles","Fried Rice","Steamed Dumplings"]
+  },
+  "romantic": {
+    msg: "Soft, rich, creamy, or cozy dishes to match a warm vibe.",
+    North: ["Paneer Butter Masala","Shahi Paneer","Malai Kofta"],
+    South: ["Appam with Stew","Coconut Rice","Tomato Rasam"],
+    Italian: ["Pasta Alfredo","Margherita Pizza","Cheese Fondue"],
+    Chinese: ["Honey Chilli Potatoes","Veg Momos","Manchurian Balls"]
+  },
+  "bored": {
+    msg: "Fun, crispy, and spicy dishes that bring excitement back!",
+    North: ["Samosa Chaat","Pav Bhaji","Aloo Tikki"],
+    South: ["Mini Uttapam","Mysore Bonda","Masala Dosa"],
+    Italian: ["Veg Lasagna","Garlic Bread","Cheese Sticks"],
+    Chinese: ["Spring Rolls","Chilli Garlic Noodles","Crispy Baby Corn"]
+  },
+  "stressed": {
+    msg: "Light, simple, and comforting dishes that calm your nerves.",
+    North: ["Dal Khichdi","Jeera Rice","Roti with Dal Fry"],
+    South: ["Rasam Rice","Curd Rice","Pongal"],
+    Italian: ["Tomato Basil Soup","Penne Arrabbiata","Veg Risotto"],
+    Chinese: ["Veg Clear Soup","Steamed Momos","Garlic Fried Rice"]
+  },
+  "normal": {
+    msg: "Balanced, all-time favorite dishes — neither too spicy nor too plain.",
+    North: ["Paneer Tikka","Butter Naan","Veg Biryani"],
+    South: ["Idli Sambhar","Dosa","Lemon Rice"],
+    Italian: ["Spaghetti Aglio e Olio","Cheese Pizza","Veg Pasta"],
+    Chinese: ["Fried Rice","Chow Mein","Veg Momos"]
+  }
+};
+
+const moodForm = document.getElementById("moodForm");
+const moodInput = document.getElementById("moodInput");
+const suggestionResult = document.getElementById("suggestionResult");
+
+moodForm.onsubmit = (e) => {
+  e.preventDefault();
+  const mood = moodInput.value.trim().toLowerCase();
+  if(!mood) return;
+
+  const moodData = moodMap[mood] || moodMap["normal"];
+  renderSuggestion(mood, moodData);
+};
+
+function renderSuggestion(mood, data){
+  const cuisines = Object.keys(data).filter(k => k !== "msg");
+  let html = `
+    <div class="suggestion-section" id="sectionWrap">
+      <div class="suggestion-title">${data.msg}</div>
+      <div class="suggestion-list">
+  `;
+  cuisines.forEach(cuisine=>{
+    html += `<div class="dish-card"><strong>${cuisine}:</strong> ${data[cuisine].join(', ')}</div>`;
+  });
+  html += `
+      </div>
+      <button class="suggest-again" onclick="resetForm()">Suggest Again</button>
+      <div class="suggestion-footer">Feel different? Try another mood!</div>
+    </div>`;
+  suggestionResult.innerHTML = html;
+}
+
+function resetForm(){
+  suggestionResult.innerHTML = "";
+  moodInput.value = "";
+  moodInput.focus();
+}
+</script>
+</body>
+</html>

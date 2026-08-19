@@ -1,0 +1,277 @@
+<html>
+<head>
+<title>About Us - CraveLoop Dine</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+  }
+
+  body {
+    background: linear-gradient(135deg, #fffdf5, #fff8e1);
+    color: #333;
+    overflow-x: hidden;
+  }
+
+  header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: linear-gradient(90deg, #ffb347, #ffcc33);
+    color: #fff;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    padding: 18px 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+  }
+
+  header h1 {
+    flex: 1;
+    text-align: center;
+    font-size: 2.2rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-shadow: 1px 2px 6px rgba(0,0,0,0.25);
+  }
+
+  .header-buttons {
+    position: absolute;
+    top: 50%;
+    right: 35px;
+    transform: translateY(-50%);
+  }
+  .header-buttons button {
+    background: linear-gradient(45deg,#fff3e0,#ffe0b2);
+    color: #5d4037;
+    border: none;
+    padding: 8px 18px;
+    border-radius: 25px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    box-shadow: 0 5px 12px rgba(0,0,0,0.15);
+    transition: all 0.3s ease;
+  }
+  .header-buttons button:hover {
+    transform: scale(1.08);
+    background: linear-gradient(45deg,#ffffff,#fff3e0);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+  }
+
+  main {
+    padding-top: 120px;
+    padding-left: 25px;
+    padding-right: 25px;
+  }
+
+  .hero {
+    text-align: center;
+    padding: 80px 20px 50px;
+    background: url('https://images.unsplash.com/photo-1498654896293-37aacf113fd9?auto=format&fit=crop&w=1600&q=80') center/cover no-repeat;
+    border-radius: 15px;
+    color: #fff;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.25);
+    animation: fadeInHero 1s ease-in-out;
+  }
+
+  .hero h2 {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+    text-shadow: 2px 2px 8px rgba(0,0,0,0.5);
+    animation: slideDown 1.5s ease;
+  }
+
+  .hero p {
+    font-size: 1.1rem;
+    max-width: 700px;
+    margin: auto;
+    line-height: 1.7;
+  }
+
+  .about-section {
+    margin: 60px auto;
+    max-width: 1100px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 40px;
+  }
+
+  .about-image {
+    flex: 1;
+    min-width: 300px;
+    text-align: center;
+  }
+
+  .about-image img {
+    width: 100%;
+    max-width: 400px;
+    border-radius: 20px;
+    box-shadow: 0 6px 25px rgba(0,0,0,0.15);
+    animation: float 3s ease-in-out infinite;
+  }
+
+  .about-text {
+    flex: 2;
+    min-width: 300px;
+    animation: fadeIn 1.2s ease;
+  }
+
+  .about-text h3 {
+    color: #e65100;
+    font-size: 1.8rem;
+    margin-bottom: 15px;
+  }
+
+  .about-text p {
+    font-size: 1rem;
+    line-height: 1.7;
+    color: #444;
+    margin-bottom: 12px;
+  }
+
+  .cuisines {
+    background: #fffaf0;
+    border-radius: 15px;
+    padding: 45px 25px;
+    margin: 80px auto 50px;
+    max-width: 1000px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+    animation: fadeInUp 1s ease;
+  }
+
+  .cuisines h3 {
+    text-align: center;
+    font-size: 1.7rem;
+    color: #e65100;
+    margin-bottom: 25px;
+  }
+
+  .cuisine-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(220px,1fr));
+    gap: 20px;
+  }
+
+  .cuisine-card {
+    background: #fff8e1;
+    border-radius: 12px;
+    padding: 25px 15px;
+    text-align: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+  }
+
+  .cuisine-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 10px 24px rgba(0,0,0,0.15);
+  }
+
+  .cuisine-card h4 {
+    font-size: 1.3rem;
+    color: #e65100;
+    margin-bottom: 8px;
+  }
+
+  .cuisine-card p {
+    font-size: 0.9rem;
+    color: #555;
+  }
+
+  footer {
+    text-align: center;
+    padding: 25px;
+    font-size: 0.9rem;
+    background: #ffb74d;
+    border-radius: 10px;
+    color: #fff;
+    margin-top: 80px;
+  }
+
+  @keyframes fadeInHero {
+    from {opacity: 0; transform: translateY(-20px);}
+    to {opacity: 1; transform: translateY(0);}
+  }
+
+  @keyframes slideDown {
+    from {opacity: 0; transform: translateY(-30px);}
+    to {opacity: 1; transform: translateY(0);}
+  }
+
+  @keyframes fadeIn {
+    from {opacity: 0;}
+    to {opacity: 1;}
+  }
+
+  @keyframes float {
+    0% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+    100% { transform: translateY(0); }
+  }
+
+  @keyframes fadeInUp {
+    from {opacity:0; transform:translateY(30px);}
+    to {opacity:1; transform:translateY(0);}
+  }
+</style>
+</head>
+
+<body>
+<header>
+  <h1>About CraveLoop Dine</h1>
+  <div class="header-buttons">
+    <button onclick="window.location.href='home.html'">🏠 Home</button>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <h2>Welcome to CraveLoop Dine 🍽️</h2>
+    <p>Where flavor meets perfection. Step into a world of authentic taste crafted with love, passion, and the finest ingredients.</p>
+  </section>
+
+  <section class="about-section">
+    <div class="about-image">
+      <img src="https://images.unsplash.com/photo-1482049016688-2d3e1b311543?auto=format&fit=crop&w=850&q=80" alt="Restaurant Interior">
+    </div>
+    <div class="about-text">
+      <h3>Our Story</h3>
+      <p>At <strong>CraveLoop Dine</strong>, we believe food is an emotion that connects hearts across cultures. Founded with a love for variety, we celebrate global cuisines while retaining the homely comfort of every dish we serve.</p>
+      <p>Our menu features a diverse range of flavors — from the rich gravies of North India and the tangy spices of South India to the delicate artistry of Italian pasta and the bold kick of Chinese stir‑fries.</p>
+      <p>Every meal is prepared with utmost care, ensuring top-tier freshness, taste, and safety so that your dining experience remains delightful, hygienic, and memorable.</p>
+    </div>
+  </section>
+
+  <section class="cuisines">
+    <h3>Our Signature Cuisines</h3>
+    <div class="cuisine-grid">
+      <div class="cuisine-card">
+        <h4>North Indian</h4>
+        <p>Buttery gravies, fragrant spices, and traditional tandoor dishes that define comfort food.</p>
+      </div>
+      <div class="cuisine-card">
+        <h4>South Indian</h4>
+        <p>Aromatic curries, crispy dosas, and wholesome rice-based flavors straight from the South.</p>
+      </div>
+      <div class="cuisine-card">
+        <h4>Italian</h4>
+        <p>Freshly made pasta, cheesy pizzas, and creamy sauces inspired by the heart of Italy.</p>
+      </div>
+      <div class="cuisine-card">
+        <h4>Chinese</h4>
+        <p>Classic stir-fries, noodles, and dumplings offering the perfect balance of spice and flavor.</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>© 2025 CraveLoop Dine — Crafted with Love for Food and Hygiene ❤️</footer>
+
+</body>
+</html>
