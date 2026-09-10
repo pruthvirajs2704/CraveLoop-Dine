@@ -1,7 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8" />
 <title>Register – CraveLoop Dine</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -182,7 +180,6 @@
 
       if (res.ok) {
         alert('✅ Registration successful!');
-        // Save user data to localStorage for AdminUser.html
         const users = JSON.parse(localStorage.getItem('registeredUsers')) || [];
         users.push({ name, email, phone, address, pincode });
         localStorage.setItem('registeredUsers', JSON.stringify(users));
