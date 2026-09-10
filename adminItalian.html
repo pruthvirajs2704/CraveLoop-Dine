@@ -1,7 +1,5 @@
 <html>
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Admin — Italian Dishes | CraveLoop Dine</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
 <style>
@@ -75,7 +73,7 @@
 
 <header>
   <h1>Admin — Italian Dishes</h1>
-  <button onclick="window.location.href='AdminHome.html'">← Back to Admin Home</button>
+  <button onclick="window.location.href='adminHome.html'">← Back to Admin Home</button>
 </header>
 
 <main>
@@ -132,7 +130,6 @@
   const list = document.getElementById('dishList');
 
   function getAllDishes() {
-    // return combined list with objects {name, price, desc}
     const combined = defaultDishes.slice(); // copy
     extraDishes.forEach(name => {
       const d = extraDetails[name] || { price: 0, desc: '' };
@@ -172,9 +169,7 @@
     dishStatus[name] = dishStatus[name] === 'paused' ? 'active' : 'paused';
     localStorage.setItem(STATUS_KEY, JSON.stringify(dishStatus));
     render();
-    // notify other pages — storage event only fires in other windows, so we dispatch a custom event too
     window.dispatchEvent(new Event('storage'));
-    // also dispatch a custom event for same-window pages
     window.dispatchEvent(new Event('italianStatusUpdate'));
   }
 
