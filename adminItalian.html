@@ -1,5 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -59,7 +58,6 @@
     box-shadow:0 8px 24px rgba(0,0,0,0.12);cursor:pointer;
   }
 
-  /* modal */
   .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);justify-content:center;align-items:center;z-index:999;}
   .modal.active{display:flex;}
   .modal-card{background:#fff;border-radius:12px;padding:18px;width:420px;box-shadow:0 10px 30px rgba(0,0,0,0.18);}
@@ -104,7 +102,7 @@
 <footer>© 2025 CraveLoop Dine — Admin Panel 🍝</footer>
 
 <script>
-  // default 15 Italian dishes (name, price, description) — exactly as in your italian.html
+  
   const defaultDishes = [
     { name: "Margherita Pizza", price: 400, desc: "Classic Neapolitan pizza with tomato, mozzarella & basil." },
     { name: "Spaghetti Carbonara", price: 450, desc: "Egg-cheese sauce with pancetta and black pepper." },
@@ -123,7 +121,6 @@
     { name: "Tiramisu", price: 300, desc: "Classic Italian dessert with ladyfingers, coffee, mascarpone." }
   ];
 
-  // localStorage keys
   const STATUS_KEY = 'crave_dishes_status_italian';
   const EXTRAS_KEY = 'italian_extra_dishes';
   const EXTRA_DETAILS = 'italian_extra_details';
@@ -167,7 +164,7 @@
       `;
       list.appendChild(card);
     });
-    // persist status map
+   
     localStorage.setItem(STATUS_KEY, JSON.stringify(dishStatus));
   }
 
@@ -181,7 +178,6 @@
     window.dispatchEvent(new Event('italianStatusUpdate'));
   }
 
-  /* Modal handling */
   const modal = document.getElementById('modal');
   function openModal(){ modal.classList.add('active'); }
   function closeModal(){ modal.classList.remove('active'); }
@@ -193,27 +189,25 @@
     const rating = document.getElementById('dishRating').value.trim();
 
     if(!name){ alert('Please enter dish name'); return; }
-    // add to extras
+   
     if(!extraDishes.includes(name)) extraDishes.push(name);
     extraDetails[name] = { price, desc, rating };
-    // save
+   
     localStorage.setItem(EXTRAS_KEY, JSON.stringify(extraDishes));
     localStorage.setItem(EXTRA_DETAILS, JSON.stringify(extraDetails));
-    // ensure status active
+    
     dishStatus[name] = 'active';
     localStorage.setItem(STATUS_KEY, JSON.stringify(dishStatus));
     render();
     closeModal();
     document.querySelectorAll('#dishName,#dishPrice,#dishDesc,#dishRating').forEach(i => i.value = '');
-    // notify other pages immediately
+    
     window.dispatchEvent(new Event('storage'));
     window.dispatchEvent(new Event('italianStatusUpdate'));
   }
 
-  // initial render
   render();
-
-  // when another window updates storage, re-read
+  
   window.addEventListener('storage', (e) => {
     if (e.key === STATUS_KEY || e.key === EXTRAS_KEY || e.key === EXTRA_DETAILS) {
       dishStatus = JSON.parse(localStorage.getItem(STATUS_KEY) || '{}');
