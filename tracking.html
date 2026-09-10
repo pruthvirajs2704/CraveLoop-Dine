@@ -43,7 +43,6 @@ header{
 }
 .back-btn:hover{background:#e86a19;}
 
-/* EMPTY STATE */
 .empty-message{
   background:#fff;
   padding:60px;
@@ -56,7 +55,6 @@ header{
   max-width:600px;
 }
 
-/* TRACKING CONTAINER */
 .tracking-container{
   background:#fff;
   width:90%;
@@ -137,7 +135,6 @@ header{
   font-size:0.9rem;
 }
 
-/* DELIVERY SECTION */
 .delivery-road{
   margin-top:25px;
   position:relative;
@@ -180,7 +177,6 @@ header{
 }
 @keyframes bounce{to{transform:translateY(-6px);}}
 
-/* POPUP */
 .popup-bg{
   position:fixed;
   inset:0;
@@ -224,13 +220,11 @@ header{
   🍔 CraveLoop Dine – Live Order Tracking 🚴‍♂️
 </header>
 
-<!-- EMPTY STATE -->
 <div id="emptyMessage" class="empty-message" style="display:none;">
   🛒 No items placed or confirmed yet.<br><br>
   Please confirm your order from the payment page.
 </div>
 
-<!-- TRACKING CONTAINER -->
 <div class="tracking-container" id="trackingContainer" style="display:none;">
   <div class="tracking-line"></div>
   <div class="tracking-progress" id="progressLine"></div>
@@ -292,7 +286,6 @@ const userEmail = localStorage.getItem('userEmail') || 'guest';
 const orderConfirmedKey = 'orderConfirmed_' + userEmail;
 const orderStartKey = 'orderStartTime_' + userEmail;
 
-// ✅ Check if confirmed order exists from payment.html
 const orderConfirmed = localStorage.getItem(orderConfirmedKey);
 
 const emptyMessage = document.getElementById('emptyMessage');
@@ -396,9 +389,8 @@ function tick(){
     document.getElementById(stages[currentStage].id).classList.add('complete');
     currentStage++;
 
-    // ✅ UPDATE ADMIN ORDER STATUS WHEN DELIVERED
     if(currentStage >= stages.length){
-      // Update the adminOrders list with delivered status
+  
       let adminOrders = JSON.parse(localStorage.getItem('adminOrders') || '[]');
       adminOrders = adminOrders.map(order => {
         if (order.user === userEmail || order.email === userEmail) {
@@ -408,13 +400,11 @@ function tick(){
       });
       localStorage.setItem('adminOrders', JSON.stringify(adminOrders));
 
-      // ✅ Show popup and alert for delivery completion
       alert("✅ Order delivered successfully! Status updated in Admin Orders.");
 
       clearInterval(interval);
       progressLine.style.height="100%";
 
-      // Clear order tracking info
       localStorage.removeItem(orderStartKey);
       localStorage.removeItem(orderConfirmedKey);
       return;
