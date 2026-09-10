@@ -1,8 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Admin — South Indian Dishes | CraveLoop Dine</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
 <style>
@@ -79,7 +76,6 @@
     cursor:pointer;
   }
 
-  /* modal */
   .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);justify-content:center;align-items:center;z-index:999;}
   .modal.active{display:flex;}
   .modal-card{background:#fff;border-radius:12px;padding:18px;width:420px;box-shadow:0 10px 30px rgba(0,0,0,0.18);position:relative;}
@@ -124,7 +120,7 @@
 <footer>© 2025 CraveLoop Dine — Admin Panel 🍛</footer>
 
 <script>
-  // Default 15 South Indian dishes
+  
   const defaultDishes = [
     { name: "Masala Dosa", price: 120, desc: "Crispy dosa filled with spiced potato masala." },
     { name: "Idly & Vada", price: 100, desc: "Soft steamed rice cakes served with hot sambar." },
@@ -190,7 +186,6 @@
     window.dispatchEvent(new Event('southStatusUpdate'));
   }
 
-  /* Modal handling */
   const modal = document.getElementById('modal');
   function openModal(){ modal.classList.add('active'); }
   function closeModal(){ modal.classList.remove('active'); }
