@@ -1,5 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -102,7 +101,6 @@
   }
   .add-btn:hover {transform:rotate(90deg) scale(1.1);}
 
-  /* Modal */
   .modal {
     display:none;
     position:fixed;
@@ -173,7 +171,6 @@
 
 <button class="add-btn" onclick="openModal()">+</button>
 
-<!-- Modal for Add Dish -->
 <div class="modal" id="modal">
   <div class="modal-content">
     <span class="close-modal" onclick="closeModal()">&times;</span>
@@ -246,7 +243,6 @@ function toggleDish(name){
   window.dispatchEvent(new Event("storage"));
 }
 
-/* Modal Handling */
 const modal=document.getElementById("modal");
 function openModal(){modal.classList.add("active");}
 function closeModal(){modal.classList.remove("active");}
