@@ -1,8 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>South Indian Dishes - CraveLoop Dine</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
 <style>
@@ -315,18 +312,15 @@ function showPopup(message) {
   popup.classList.add('show');
   setTimeout(() => popup.classList.remove('show'), 2000);
 }
-
-// Load dishes initially
+ 
 loadDishes();
 
-// 🔄 Auto update when admin changes dish status
 window.addEventListener("storage", (e) => {
   if (e.key === "crave_dishes_status_south") {
     loadDishes();
   }
 });
 
-// 🔁 Custom same-tab event listener
 window.addEventListener("southStatusUpdate", () => loadDishes());
 </script>
 </body>
