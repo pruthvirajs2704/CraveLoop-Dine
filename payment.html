@@ -1,8 +1,5 @@
-<!doctype html>
-<html lang="en">
+<html>
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Payment — CraveLoop Dine</title>
 
 <style>
@@ -56,7 +53,6 @@ header.top{
 h1{font-size:22px;margin:0;color:#442d1d;}
 .subtitle{color:var(--muted);font-size:14px;text-align:center;}
 
-/* Items */
 .items{
   background:#fffaf7;
   padding:20px;
@@ -94,7 +90,6 @@ h1{font-size:22px;margin:0;color:#442d1d;}
   color:#784b28;
 }
 
-/* Sidebar */
 .sidebar{
   background:#fffaf7;
   border:1px solid #ffd9b5;
@@ -151,7 +146,6 @@ input[type="text"], input[type="number"], input[type="tel"]{
   align-items:center;justify-content:center;
 }
 
-/* QR */
 .qr-area{
   margin-top:20px;
   text-align:center;
@@ -167,7 +161,6 @@ canvas.qr{
   box-shadow:0 6px 16px rgba(0,0,0,0.2);
 }
 
-/* Modal */
 .modal{
   position:fixed;inset:0;
   background:rgba(0,0,0,0.45);
@@ -232,14 +225,12 @@ canvas.qr{
       <div class="summary-row total">
         <div>Total</div><div id="grandTotal">₹0</div>
       </div>
-
-      <!-- Name -->
+      
       <div class="input-group">
         <label for="userName">Name</label>
         <input type="text" id="userName" placeholder="Enter your full name" autocomplete="name">
       </div>
 
-      <!-- Mobile number moved up -->
       <div class="input-group">
         <label for="mobile">Mobile Number</label>
         <input type="tel" id="mobile" placeholder="Enter 10-digit mobile number" autocomplete="tel">
@@ -274,7 +265,6 @@ canvas.qr{
   </aside>
 </div>
 
-<!-- Confirmation Modal -->
 <div class="modal" id="modal">
   <div class="modal-card">
     <div class="check">✅</div>
@@ -335,7 +325,6 @@ canvas.qr{
 
   editCartBtn.addEventListener('click', ()=>window.location.href='cart.html');
 
-  // ✅ Press Enter moves to next field
   const fields = ['userName','mobile','house','area','pincode'];
   fields.forEach((id, idx)=>{
     const el = document.getElementById(id);
@@ -389,7 +378,6 @@ canvas.qr{
       };
       localStorage.setItem('orderDetails_' + userEmail, JSON.stringify(orderDetails));
 
-      // ✅ Fix: store mobile correctly for AdminOrders
       const adminOrders = JSON.parse(localStorage.getItem('adminOrders') || '[]');
       const newOrder = {
         orderId: 'CLD' + (1000 + adminOrders.length + 1),
