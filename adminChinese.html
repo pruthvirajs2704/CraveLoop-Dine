@@ -1,8 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Admin — Chinese Dishes | CraveLoop Dine</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
 <style>
@@ -64,7 +61,6 @@
     font-size:26px;box-shadow:0 8px 24px rgba(0,0,0,0.12);cursor:pointer;
   }
 
-  /* modal */
   .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);
     justify-content:center;align-items:center;z-index:999;}
   .modal.active{display:flex;}
@@ -98,7 +94,7 @@
 
 <header>
   <h1>Admin — Chinese Dishes</h1>
-  <button onclick="window.location.href='AdminHome.html'">← Back</button>
+  <button onclick="window.location.href='adminHome.html'">← Back</button>
 </header>
 
 <main>
@@ -108,7 +104,6 @@
 
 <button class="add-btn" onclick="openModal()">+</button>
 
-<!-- Add Dish Modal -->
 <div class="modal" id="modal">
   <div class="modal-card">
     <span class="close-x" onclick="closeModal()">&times;</span>
@@ -126,7 +121,6 @@
 <footer>© 2025 CraveLoop Dine — Admin Panel 🍜</footer>
 
 <script>
-  // Default Chinese dishes (15)
   const defaultDishes = [
     { name: "Kung Pao Chicken", price: 250, desc: "Spicy stir-fry with chicken, peanuts, and chili peppers." },
     { name: "Sweet & Sour Pork", price: 220, desc: "Crispy pork in tangy pineapple sauce." },
@@ -145,7 +139,6 @@
     { name: "Char Siu", price: 250, desc: "Honey-glazed barbecued pork." }
   ];
 
-  // LocalStorage keys
   const STATUS_KEY = "crave_dishes_status_chinese";
   const EXTRAS_KEY = "chinese_extra_dishes";
   const EXTRA_DETAILS = "chinese_extra_details";
@@ -190,11 +183,9 @@
     localStorage.setItem(STATUS_KEY, JSON.stringify(dishStatus));
     render();
 
-    // 🔹 Trigger storage event for user page sync
     window.dispatchEvent(new Event("storage"));
   }
 
-  // Add Dish Modal
   const modal = document.getElementById("modal");
   function openModal() { modal.classList.add("active"); }
   function closeModal() { modal.classList.remove("active"); }
@@ -218,13 +209,11 @@
     render();
     closeModal();
 
-    // Notify user page
     window.dispatchEvent(new Event("storage"));
   }
 
   render();
 
-  // 🔹 Sync updates if any change detected (pause/continue/addition)
   window.addEventListener("storage", (e) => {
     if ([STATUS_KEY, EXTRAS_KEY, EXTRA_DETAILS].includes(e.key)) {
       dishStatus = JSON.parse(localStorage.getItem(STATUS_KEY) || "{}");
