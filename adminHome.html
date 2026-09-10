@@ -1,5 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -82,7 +81,6 @@
     <button class="home-btn" onclick="window.location.href='home.html'">Home</button>
   </header>
 
-  <!-- Dashboard -->
   <div id="dashboard" class="page active">
     <div class="cards">
       <div class="card"><h3>Total Users </h3><div class="value" id="cardUsers">0</div></div>
@@ -96,7 +94,6 @@
     </div>
   </div>
 
-  <!-- Users -->
   <div id="users" class="table-container page">
     <h3>Registered Users</h3>
     <table id="usersTable">
@@ -105,7 +102,6 @@
     </table>
   </div>
 
-  <!-- Orders -->
   <div id="orders" class="table-container page">
     <h3>Orders Tracking</h3>
     <table id="ordersTable">
@@ -118,7 +114,6 @@
 <script>
 let dishChart, availabilityChart;
 
-// 🔹 Fetch dynamic data for dashboard cards
 function loadDashboardData() {
   const users = JSON.parse(localStorage.getItem("registeredUsers") || "[]");
   const dishes = JSON.parse(localStorage.getItem("availableDishes") || "[]");
@@ -130,7 +125,6 @@ function loadDashboardData() {
   document.getElementById("cardOrders").textContent = orders.length;
   document.getElementById("cardReviews").textContent = reviews.filter(r => r.status !== "Resolved").length;
 
-  // 🔹 Update charts dynamically based on most ordered dishes
   const dishCount = {};
   orders.forEach(order => {
     if (Array.isArray(order.items)) {
@@ -147,8 +141,6 @@ function loadDashboardData() {
 
   updateCharts(dishLabels, dishValues);
 }
-
-// 🔹 Render charts dynamically
 function updateCharts(labels, values) {
   if (dishChart) dishChart.destroy();
   if (availabilityChart) availabilityChart.destroy();
@@ -192,14 +184,12 @@ function updateCharts(labels, values) {
   });
 }
 
-// 🔹 Load registered users table
 function loadUsers() {
   const users = JSON.parse(localStorage.getItem("registeredUsers") || "[]");
   const tbody = document.querySelector("#usersTable tbody");
   tbody.innerHTML = users.map(u => `<tr><td>${u.name}</td><td>${u.email}</td><td>${u.phone || u.mobile || "N/A"}</td></tr>`).join("");
 }
 
-// 🔹 Load confirmed orders table
 function renderOrders() {
   const orders = JSON.parse(localStorage.getItem("confirmedOrders") || "[]");
   const tbody = document.querySelector("#ordersTable tbody");
@@ -216,7 +206,6 @@ function renderOrders() {
   });
 }
 
-// 🔹 Navigation and page handling
 const navLinks = document.querySelectorAll(".nav-link");
 const pages = document.querySelectorAll(".page");
 navLinks.forEach(link => {
@@ -244,12 +233,10 @@ navLinks.forEach(link => {
   });
 });
 
-// 🔹 Initialize Dashboard
 loadDashboardData();
 loadUsers();
 renderOrders();
 
-// 🔹 Auto-update dashboard every 15 seconds for live reflection
 setInterval(loadDashboardData, 15000);
 </script>
 
