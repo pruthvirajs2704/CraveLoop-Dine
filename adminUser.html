@@ -1,11 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Admin — Registered Users | CraveLoop Dine</title>
 
-<!-- Fonts -->
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
 
 <style>
@@ -27,7 +23,6 @@ body {
   overflow-x: hidden;
 }
 
-/* Header */
 header {
   background: linear-gradient(90deg, var(--primary), var(--secondary));
   color: white;
@@ -39,7 +34,6 @@ header {
   letter-spacing: 1px;
 }
 
-/* Main Container */
 .container {
   width: 90%;
   max-width: 1100px;
@@ -51,7 +45,6 @@ header {
   animation: fadeIn 0.8s ease-in-out;
 }
 
-/* Title */
 .container h2 {
   color: var(--primary);
   text-align: center;
@@ -72,7 +65,6 @@ header {
   border-radius: 3px;
 }
 
-/* Table */
 table {
   width: 100%;
   border-collapse: collapse;
@@ -98,7 +90,6 @@ tr:hover {
   transition: 0.3s ease;
 }
 
-/* No Users Message */
 #noUsers {
   text-align: center;
   color: #999;
@@ -106,13 +97,11 @@ tr:hover {
   padding: 2rem 0;
 }
 
-/* Animations */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(15px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* Button */
 button {
   background: var(--accent);
   color: white;
@@ -128,7 +117,6 @@ button:hover {
   background: #17a673;
 }
 
-/* Responsive */
 @media (max-width: 768px) {
   table {
     font-size: 0.85rem;
@@ -166,7 +154,7 @@ button:hover {
 </div>
 
 <script>
-/* Load users from localStorage */
+
 document.addEventListener("DOMContentLoaded", function () {
   const users = JSON.parse(localStorage.getItem("registeredUsers")) || [];
   const userTable = document.getElementById("userTable");
@@ -192,7 +180,6 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 });
 
-/* Clear all users */
 function clearUsers() {
   if (confirm("Are you sure you want to clear all registered users?")) {
     localStorage.removeItem("registeredUsers");
