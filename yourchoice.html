@@ -1,15 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Mood-Based Food Suggestion 🍽️</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
 html, body {
   height: 100%;
   margin: 0;
-  overflow-y: auto; /* ✅ Allow page scrolling */
+  overflow-y: auto;
 }
 body {
   font-family: 'Poppins', sans-serif;
@@ -18,7 +15,6 @@ body {
   position: relative;
 }
 
-/* 🔙 Back Button */
 .back-button {
   position: fixed;
   top: 20px;
@@ -138,7 +134,7 @@ body {
   width: 90%;
   max-width: 380px;
   overflow-y: auto;
-  max-height: 60vh; /* ✅ Scrollable suggestion area */
+  max-height: 60vh; 
 }
 @keyframes fadeInUp {
   0% { opacity:0; transform:translateY(16px);}
@@ -192,8 +188,7 @@ body {
 </style>
 </head>
 <body>
-
-<!-- 🔙 Back Button -->
+  
 <button class="back-button" onclick="window.location.href='home.html'">← Back</button>
 
 <div class="emoji-bg" id="emojiBg"></div>
@@ -209,7 +204,6 @@ body {
 </div>
 
 <script>
-// Emoji floating background
 const emojis = ["🍕","🍜","🍛","🍲","🍟","🍔","🍤","🥗","🍣","🥘","🥙","🍩"];
 const emojiBg = document.getElementById("emojiBg");
 for(let i=0;i<20;i++){
@@ -222,8 +216,7 @@ for(let i=0;i<20;i++){
   el.style.animationDuration = (10 + Math.random()*9) + "s";
   emojiBg.appendChild(el);
 }
-
-// Mood-food dataset
+  
 const moodMap = {
   "happy": {
     msg: "You’re in a joyful mood — go for flavorful, rich, and exciting dishes!",
