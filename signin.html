@@ -1,7 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8" />
 <title>CraveLoop Dine – Sign In</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -267,8 +265,7 @@
         alert('Password must be at least 8 characters.');
         return;
       }
-
-      // Store user info in localStorage
+     
       let users = JSON.parse(localStorage.getItem('crave_users') || '[]');
       const existingUser = users.find(u => u.email === email);
       if (!existingUser) {
@@ -278,7 +275,6 @@
       }
       localStorage.setItem('crave_users', JSON.stringify(users));
 
-      // Admin access control
       if (role === 'admin') {
         if (email === 'rajp51551@gmail.com') {
           alert('Welcome Pruthvi!');
