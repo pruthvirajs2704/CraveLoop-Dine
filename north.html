@@ -1,8 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>North Indian Dishes - CraveLoop Dine</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
 <style>
@@ -105,7 +102,7 @@ const dishes = [
 ];
 
 const container = document.getElementById("dishContainer");
-const dishStatus = JSON.parse(localStorage.getItem("crave_dishes_status_north") || "{}"); // ✅ updated to match admin key
+const dishStatus = JSON.parse(localStorage.getItem("crave_dishes_status_north") || "{}"); 
 
 function renderDishes() {
   container.innerHTML = "";
