@@ -1,8 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Chinese Dishes - CraveLoop Dine</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
 <style>
@@ -156,7 +153,6 @@ function getAllDishes() {
   return combined;
 }
 
-// 🔹 Render all dishes including paused/unavailable ones
 function renderDishes(){
   const statuses = JSON.parse(localStorage.getItem("crave_dishes_status_chinese") || "{}");
   const container = document.getElementById("dishContainer");
@@ -196,14 +192,12 @@ function showPopup(msg){
   setTimeout(()=>p.classList.remove("show"),2000);
 }
 
-// 🔹 Listen for admin updates (pause/resume)
 window.addEventListener("storage",e=>{
   if(e.key==="crave_dishes_status_chinese" || e.key==="chinese_extra_dishes" || e.key==="chinese_extra_details") {
     renderDishes();
   }
 });
 
-// 🔹 Auto-refresh every 2s to stay in sync even if same tab
 setInterval(renderDishes, 2000);
 
 renderDishes();
